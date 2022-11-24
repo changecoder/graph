@@ -1,0 +1,25 @@
+# Logs
+logs
+*.log
+
+# TypeScript
+typings/
+
+# build
+esm
+lib
+dist
+build
+
+# lock
+package-lock.json
+yarn.lock
+
+# Dependency directories
+node_modules
+**/node_modules
+
+# temp
+.DS_Store
+
+.vscode/
