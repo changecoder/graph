@@ -1,14 +1,20 @@
 {
-  "extends": ["eslint:recommended", "prettier"],
+  "extends": [
+    "eslint:recommended", 
+    "prettier"
+  ],
   "parser": "@typescript-eslint/parser",
   "env": {
     "browser": true
   },
   "parserOptions": {
     "sourceType": "module",
-    "ecmaVersion": 6,
-    "impliedStrict": true
+    "ecmaVersion": 2018
   },
   "plugins": ["html", "prettier", "@typescript-eslint", "import"],
-  "rules": {}
+  "rules": {
+    "semi": [2,"never"],
+    "no-unused-vars": 0, // @typescript-eslint/no-unused-vars
+    "@typescript-eslint/no-use-before-define": [2, { "functions": false }],
+  }
 }
