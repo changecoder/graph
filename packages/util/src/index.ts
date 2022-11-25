@@ -1,1 +1,1 @@
-export { default as mix, default as assign } from './mix'
+export * from './lodash'

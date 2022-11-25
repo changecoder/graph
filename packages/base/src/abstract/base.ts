@@ -17,7 +17,7 @@ export default abstract class Base extends EventEmitter implements IBase {
    */
   cfg: LooseObject
 
-  get(name: string) {
+  get(name: string): any {
     throw new Error('Method not implemented.')
   }
 

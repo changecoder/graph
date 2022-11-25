@@ -1,4 +1,4 @@
-import { IShape, ICtor } from './interfaces'
+import { IShape, ICtor, IElement } from './interfaces'
 
 /** 对象 */
 export interface LooseObject {
@@ -145,3 +145,5 @@ export type GroupCfg = {
 export type ShapeBase = {
   [key: string]: ICtor<IShape>
 }
+
+export type ElementFilterFn = (el: IElement) => boolean

@@ -3,10 +3,10 @@ import {
   ChangeType,
   Point,
   ShapeBase,
-  BBox,
   ShapeCfg,
   GroupCfg,
   Renderer,
+  ElementFilterFn,
 } from './types'
 
 export interface ICtor<T> {
@@ -147,16 +147,7 @@ export interface IObservable {
    * @param {object} attrs 图形属性配置项，键值对方式
    */
   attr(attrs: object): void
-  /**
-   * 获取包围盒，这个包围盒是相对于图形元素自己，不会计算 matrix
-   * @returns {BBox} 包围盒
-   */
-  getBBox(): BBox
-  /**
-   * 获取图形元素相对画布的包围盒，会计算从顶层到当前的 matrix
-   * @returns {BBox} 包围盒
-   */
-  getCanvasBBox(): BBox
+
   /**
    * 复制对象
    */
@@ -173,68 +164,6 @@ export interface IObservable {
    * 设置 zIndex
    */
   setZIndex(zIndex: number): void
-  /**
-   * 清除掉所有平移、旋转和缩放
-   */
-  resetMatrix(): void
-  /**
-   * 获取 transform 后的矩阵
-   * @return {number[]} 矩阵
-   */
-  getMatrix(): number[]
-  /**
-   * 设置 transform 的矩阵
-   * @param {number[]} m 应用到图形元素的矩阵
-   */
-  setMatrix(m: number[]): void
-  /**
-   * 将向量应用设置的矩阵
-   * @param {number[]} v 向量
-   */
-  applyToMatrix(v: number[]): void
-  /**
-   * 根据设置的矩阵，将向量转换相对于图形/分组的位置
-   * @param {number[]} v 向量
-   */
-  invertFromMatrix(v: number[]): void
-  /**
-   * 移动元素
-   * @param {number} translateX x 轴方向的移动距离
-   * @param {number} translateY y 轴方向的移动距离
-   * @return {IElement} 元素
-   */
-  translate(translateX: number, translateY?: number): IElement
-
-  /**
-   * 移动元素到目标位置
-   * @param {number} targetX 目标位置的 x 轴坐标
-   * @param {number} targetY 目标位置的 y 轴坐标
-   * @return {IElement} 元素
-   */
-  move(targetX: number, targetY: number): IElement
-
-  /**
-   * 移动元素到目标位置，等价于 move 方法。由于 moveTo 的语义性更强，因此在文档中推荐使用 moveTo 方法
-   * @param {number} targetX 目标位置的 x 轴坐标
-   * @param {number} targetY 目标位置的 y 轴坐标
-   * @return {IElement} 元素
-   */
-  moveTo(targetX: number, targetY: number): IElement
-
-  /**
-   * 缩放元素
-   * @param {number} ratio 各个方向的缩放比例
-   * @return {IElement} 元素
-   */
-  scale(ratio: number): IElement
-
-  /**
-   * 缩放元素
-   * @param {number} ratioX x 方向的缩放比例
-   * @param {number} ratioY y 方向的缩放比例
-   * @return {IElement} 元素
-   */
-  scale(ratioX: number, ratioY: number): IElement
 }
 
 export interface IContainer extends IElement {
@@ -307,11 +236,6 @@ export interface IContainer extends IElement {
   getChildren(): IElement[]
 
   /**
-   * 子元素按照 zIndex 进行排序
-   */
-  sort(): void
-
-  /**
    * 清理所有的子元素
    */
   clear(): void
@@ -331,11 +255,18 @@ export interface IContainer extends IElement {
   removeChild(element: IElement, destroy?: boolean): void
 
   /**
+   * 查找元素，找到第一个返回
+   * @param  {ElementFilterFn} fn 匹配函数
+   * @return {IElement|null} 元素，可以为空
+   */
+  find(fn: ElementFilterFn): IElement | null
+
+  /**
    * 根据 ID 查找元素
    * @param {string} id 元素 id
    * @return {IElement | null} 元素
    */
-  findById(id: string): IElement
+  findById(id: string): IElement | null
 }
 
 export interface IGroup extends IElement, IContainer {
