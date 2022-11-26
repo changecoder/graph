@@ -14,7 +14,10 @@
   "plugins": ["html", "prettier", "@typescript-eslint", "import"],
   "rules": {
     "semi": [2,"never"],
+    "quotes": [2, "single"],
+    "@typescript-eslint/camelcase": 0,
     "no-unused-vars": 0, // @typescript-eslint/no-unused-vars
     "@typescript-eslint/no-use-before-define": [2, { "functions": false }],
+    "no-useless-escape": 1
   }
 }

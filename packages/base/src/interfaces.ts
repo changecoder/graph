@@ -1,7 +1,7 @@
+import GraphEvent from './event/graph-event'
 import {
   LooseObject,
   ChangeType,
-  Point,
   ShapeBase,
   ShapeCfg,
   GroupCfg,
@@ -164,6 +164,13 @@ export interface IObservable {
    * 设置 zIndex
    */
   setZIndex(zIndex: number): void
+
+  /**
+   * 触发委托事件
+   * @param  {string}  type 事件类型
+   * @param  {GraphEvent}  eventObj 事件对象
+   */
+  emitDelegation(type: string, eventObj: GraphEvent): void;
 }
 
 export interface IContainer extends IElement {
@@ -210,12 +217,10 @@ export interface IContainer extends IElement {
 
   /**
    * 根据 x,y 获取对应的图形
-   * @param {number} x x 坐标
-   * @param {number} y y 坐标
    * @param {Event} 浏览器事件对象
    * @returns 添加的图形分组
    */
-  getShape(x: number, y: number, ev: Event): IShape
+  getShape(ev: Event): IShape
 
   /**
    * 添加图形元素，已经在外面构造好的类
@@ -302,47 +307,13 @@ export interface IGroup extends IElement, IContainer {
   changeSize(width: number, height: number): void
 
   /**
-   * 根据事件对象获取画布坐标
-   * @param  {Event} ev 事件对象
-   * @return {object} 画布坐标
-   */
-  getPointByEvent(ev: Event): Point
-
-  /**
-   * 根据事件对象获取窗口坐标
-   * @param  {Event} ev 事件对象
-   * @return {object} 窗口坐标
-   */
-  getClientByEvent(ev: Event): Point
-
-  /**
-   * 将窗口坐标转变成画布坐标
-   * @param  {number} clientX 窗口 x 坐标
-   * @param  {number} clientY 窗口 y 坐标
-   * @return {object} 画布坐标
-   */
-  getPointByClient(clientX: number, clientY: number): Point
-
-  /**
-   * 将 canvas 坐标转换成窗口坐标
-   * @param {number} x canvas 上的 x 坐标
-   * @param {number} y canvas 上的 y 坐标
-   * @returns {object} 窗口坐标
-   */
-  getClientByPoint(x: number, y: number): Point
-
-  /**
    * 绘制
    */
   draw(): void
 }
 
-export interface IShape extends IElement {
-  /**
-   * 图形拾取
-   * @param {number} x x 坐标
-   * @param {number} y y 坐标
-   * @returns 是否已被拾取
-   */
-  isHit(x: number, y: number): boolean
+export interface IShape extends IElement {}
+
+export interface StringKeyObject {
+  [key: string]: any
 }

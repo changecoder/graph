@@ -1,4 +1,4 @@
-import { ICanvas, IContainer, IElement } from "../interfaces"
+import { ICanvas, IContainer, IElement } from '../interfaces'
 
 export function removeFromArray(arr: any[], obj: any) {
   const index = arr.indexOf(obj)
@@ -34,3 +34,6 @@ export function setCanvas(element: IElement, canvas: ICanvas) {
     }
   }
 }
+
+// 是否浏览器环境
+export const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined'

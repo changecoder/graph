@@ -1,9 +1,10 @@
 import { mix, isObject, each, isArray } from '@graph/util'
 
 import Base from './base'
-import { ICanvas, ICtor, IElement, IGroup } from '../interfaces'
+import { ICanvas, ICtor, IElement, IGroup, StringKeyObject } from '../interfaces'
 import { ChangeType, ShapeAttrs, ShapeBase} from '../types'
 import { removeFromArray } from '../util'
+import GraphEvent from '../event/graph-event'
 
 // 数组嵌套对象的场景不考虑
 function _cloneArrayAttr(arr: any[]) {
@@ -34,9 +35,7 @@ export default abstract class Element extends Base implements IElement {
     this.initAttrs(attrs)
   }
   
-  getDefaultCfg(): {
-    [key: string]: any
-  } {
+  getDefaultCfg(): StringKeyObject {
     return {
       visible: true,
       capture: true,
@@ -86,7 +85,7 @@ export default abstract class Element extends Base implements IElement {
     }
     if (isObject(name)) {
       for (const k in name) {
-        this.setAttr(k, name[k])
+        this.setAttr(k, (name as StringKeyObject)[k])
       }
       this.afterAttrsChange()
       return this
@@ -151,9 +150,7 @@ export default abstract class Element extends Base implements IElement {
 
   clone() {
     const originAttrs = this.attrs
-    const attrs: {
-      [key: string]: any
-    } = {}
+    const attrs: StringKeyObject = {}
     each(originAttrs, (i: any, k: string | number) => {
       if (isArray(originAttrs[k])) {
         attrs[k] = _cloneArrayAttr(originAttrs[k])
@@ -171,6 +168,15 @@ export default abstract class Element extends Base implements IElement {
   setZIndex(zIndex: number) {
     this.set('zIndex', zIndex)
     return this
+  }
+
+  /**
+   * 触发委托事件
+   * @param  {string}     type 事件类型
+   * @param  {GraphEvent} eventObj 事件对象
+   */
+  emitDelegation(type: string, eventObj: GraphEvent) {
+    // 暂未实现委托事件触发
   }
 
   abstract getShapeBase(): ShapeBase

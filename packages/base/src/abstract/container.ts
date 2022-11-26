@@ -1,9 +1,9 @@
 
-import { isObject, upperFirst, isFunction, each } from "@graph/util"
-import { IContainer, IElement, IGroup, IShape } from "../interfaces"
-import { ElementFilterFn } from "../types"
-import { removeChild, setCanvas } from "../util"
-import Element from "./element"
+import { isObject, upperFirst, isFunction, each } from '@graph/util'
+import { IContainer, IElement, IGroup, IShape } from '../interfaces'
+import { ElementFilterFn } from '../types'
+import { removeChild, setCanvas } from '../util'
+import Element from './element'
 
 const SHAPE_MAP: {
   [key: string]: any
@@ -162,7 +162,7 @@ export default abstract class Container extends Element implements IContainer {
     super.destroy()
   }
 
-  getShape(x: number, y: number, ev: Event): IShape {
+  getShape(ev: Event): IShape {
     return {} as IShape
   }
   

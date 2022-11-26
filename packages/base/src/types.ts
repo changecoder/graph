@@ -5,29 +5,6 @@ export interface LooseObject {
   [key: string]: any
 }
 
-export type Point = {
-  x: number
-  y: number
-}
-
-export type BBox = {
-  x: number
-  y: number
-  minX: number
-  minY: number
-  maxX: number
-  maxY: number
-  width: number
-  height: number
-}
-
-export type SimpleBBox = {
-  x: number
-  y: number
-  width: number
-  height: number
-}
-
 export type ChangeType =
   | 'changeSize'
   | 'add'
@@ -41,6 +18,36 @@ export type ChangeType =
   | 'matrix'
 
 export type Renderer = 'canvas' | 'svg'
+
+export type CanvasCfg = {
+  /**
+   * 容器
+   * @type {string|HTMLElement}
+   */
+  container: string | HTMLElement
+  /**
+   * 画布宽度
+   * @type {number}
+   */
+  width: number
+  /**
+   * 画布高度
+   * @type {number}
+   */
+  height: number
+  /**
+   * 是否可监听
+   * @type {boolean}
+   */
+  capture?: boolean
+  /**
+   * 只读属性，渲染引擎
+   * @type {string}
+   */
+  renderer?: Renderer
+
+  [key: string]: any
+}
 
 type ColorType = string | null
 
