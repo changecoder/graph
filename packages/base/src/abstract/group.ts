@@ -2,6 +2,8 @@ import { IGroup } from '../interfaces'
 import Container from './container'
 
 export default abstract class AbstractGroup extends Container implements IGroup {
+  shapeMap = {}
+  
   isGroup() {
     return true
   }

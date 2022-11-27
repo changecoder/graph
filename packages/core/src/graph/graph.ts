@@ -18,6 +18,8 @@ import {
 import { ItemController, ModeController } from './controller'
 import Global from '../global'
 import { ICombo, IEdge, INode } from '../interface'
+import { ITEM_TYPE } from '../constants'
+import { singleDataValidation } from '../util/validation'
 
 export interface PrivateGraphOption extends GraphOptions {
   data: GraphData
@@ -177,8 +179,22 @@ export default abstract class AbstractGraph extends EventEmitter implements IAbs
     model: ModelConfig,
     itemController: ItemController
   ): Item | boolean {
-    console.warn('等待开发')
-    return false
+    if (!singleDataValidation(type, model)) {
+      return false
+    }
+
+    if (model.id && this.findById(model.id as string)) {
+      console.warn(
+        `This item exists already. Be sure the id %c${model.id}%c is unique.`,
+        'font-size: 20px; color: red;',
+        ''
+      )
+      return false
+    }
+
+    const item = itemController.addItem(type, model)
+
+    return item || false
   }
 
   public addItem(
@@ -192,7 +208,16 @@ export default abstract class AbstractGraph extends EventEmitter implements IAbs
   public addItems(
     items: { type: ItemType, model: ModelConfig }[] = []
   ) {
+    const itemController: ItemController = this.get('itemController')
+
     const returnItems: (Item | boolean)[] = []
+
+    // Edge需要在Node和Combo后添加
+    returnItems.push(...items.filter(item => item.type !== ITEM_TYPE.EDGE).map(item => this.innerAddItem(item.type, item.model, itemController)))
+    // 添加Edge
+    returnItems.push(...items.filter(item => item.type === ITEM_TYPE.EDGE).map(item => this.innerAddItem(item.type, item.model, itemController)))
+
+    this.autoPaint()
 
     return returnItems
   }
@@ -209,7 +234,38 @@ export default abstract class AbstractGraph extends EventEmitter implements IAbs
   }
 
   public render(): void {
+    const data: GraphData = this.get('data')
 
+    if (!data) {
+      throw new Error('data must be defined first')
+    }
+
+
+    const { nodes = [] } = data
+
+    this.clear(true)
+
+    this.emit('beforerender')
+
+    this.addItems(
+      nodes.map(node => ({ type: 'node', model: node }))
+    )
+
+    const success = () => {
+      this.autoPaint()
+      this.emit('afterrender')
+    }
+
+    // layout
+    const layoutController = this.get('layoutController')
+    if (layoutController) {
+      layoutController.layout(success)
+      if (this.destroyed) {
+        return 
+      }
+    } else {
+      success()
+    }
   }
 
   protected addCombos(combos: ComboConfig[]) {

@@ -72,14 +72,15 @@ export interface ModelConfig {
   color?: string
   anchorPoints?: number[][]
   startPoint?: {
-    x: number;
-    y: number;
+    x: number
+    y: number
   }
   endPoint?: {
-    x: number;
-    y: number;
+    x: number
+    y: number
   }
   visible?: boolean
+  [key: string]: unknown
 }
 
 
@@ -103,11 +104,11 @@ export interface ComboConfig extends ModelConfig {
 }
 
 export interface EdgeConfig extends ModelConfig {
-  id?: string;
-  source?: string;
-  target?: string;
-  sourceNode?: Node;
-  targetNode?: Node;
+  id?: string
+  source?: string
+  target?: string
+  sourceNode?: Node
+  targetNode?: Node
   startPoint?: IPoint
   endPoint?: IPoint
   controlPoints?: IPoint[]
@@ -131,6 +132,39 @@ export interface GraphData {
 export interface NodeMap {
   [key: string]: INode
 }
+
+// Shape types
+export type ShapeStyle = Partial<{
+  x: number
+  y: number
+  r: number
+  radius: number
+  width: number
+  height: number
+  offset: number | number[]
+  stroke: string | null
+  strokeOpacity: number
+  fill: string | null
+  fillOpacity: number
+  lineWidth: number
+  lineAppendWidth: number
+  lineDash: number[]
+  path: string | object[]
+  points: object[]
+  matrix: number[]
+  opacity: number
+  size: number | number[]
+  shadowColor: string
+  shadowBlur: number
+  shadowOffsetX: number
+  shadowOffsetY: number
+  cursor: string
+  position: string
+  fontSize: number
+
+  // support more properties
+  [key: string]: any
+}>
 
 export interface Indexable<T> {
   [key: string]: T

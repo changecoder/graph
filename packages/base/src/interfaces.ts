@@ -281,6 +281,8 @@ export interface IGroup extends IElement, IContainer {
    * @return {boolean} 是否是实体分组
    */
   isEntityGroup(): boolean
+
+  shapeMap: StringKeyObject
 }
 
 /**

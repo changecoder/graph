@@ -15,4 +15,5 @@ export { default as upperFirst } from './upperFirst'
 export { default as each } from './each'
 export { default as toString } from './to-string'
 export { default as uniqueId } from './unique-id'
+export { default as clone } from './clone'
 

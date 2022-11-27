@@ -1,4 +1,4 @@
-import { IElement as IBaseElement, IGroup as IBaseGroup } from '@graph/base'
+import { IElement as IBaseElement, IGroup as IBaseGroup, IShape as IBaseShape } from '@graph/base'
 import Defs from './defs'
 
 export interface IElement extends IBaseElement {
@@ -15,4 +15,10 @@ export interface IGroup extends IBaseGroup {
    * @return {SVGGElement} 分组容器
    */
   createDom(): SVGGElement
+}
+
+export interface IShape extends IBaseShape {
+  type: string;
+  canFill: boolean;
+  canStroke: boolean;
 }

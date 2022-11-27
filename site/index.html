@@ -15,7 +15,22 @@
       width: 800,
       height: 500
     })
-    console.log(graph)
+    const data = {
+      nodes: [
+        {
+          id: 'node1',
+          x: 100,
+          y: 200
+        },
+        {
+          id: 'node2',
+          x: 300,
+          y: 200
+        }
+      ]
+    }
+    graph.data(data)
+    graph.render()
   </script>
 </body>
 </html>

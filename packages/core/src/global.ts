@@ -5,5 +5,9 @@ export default {
   nodeContainerClassName: 'node-container',
   edgeContainerClassName: 'edge-container',
   comboContainerClassName: 'combo-container',
-  delegateContainerClassName: 'delegate-container'
+  delegateContainerClassName: 'delegate-container',
+  defaultNode: {
+    type: 'circle',
+    size: 20
+  }
 }
