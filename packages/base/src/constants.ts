@@ -19,3 +19,5 @@ export const LEFT_BTN_CODE = 0
 export const DELEGATION_SPLIT = ':'
 
 export const PX_SUFFIX = 'px'
+
+export const MATRIX = 'matrix'

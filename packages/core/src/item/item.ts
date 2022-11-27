@@ -132,8 +132,29 @@ export default class ItemBase implements IItemBase {
    * @param {object} cfg 待更新数据
    */
   public updatePosition(cfg: ModelConfig): boolean {
-    console.warn('即将实现')
-    return false
+    const model: ModelConfig = this.getModel()
+
+    const x = cfg.x === undefined ? model.x : cfg.x
+    const y = cfg.y === undefined ? model.y : cfg.y
+
+    const group: IGroup = this.get('group')
+
+
+    if (x === undefined || y === undefined) {
+      return false
+    }
+    model.x = x
+    model.y = y
+
+    const matrix = group.getMatrix()
+
+    if (matrix && matrix[6] === x && matrix[7] === y) {
+      return false
+    }
+
+    group.translate(x, y)
+
+    return true
   }
 
   /**

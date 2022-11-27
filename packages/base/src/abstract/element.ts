@@ -5,6 +5,7 @@ import { ICanvas, ICtor, IElement, IGroup, StringKeyObject } from '../interfaces
 import { ChangeType, ShapeAttrs, ShapeBase} from '../types'
 import { removeFromArray } from '../util'
 import GraphEvent from '../event/graph-event'
+import { MATRIX } from '../constants'
 
 // 数组嵌套对象的场景不考虑
 function _cloneArrayAttr(arr: any[]) {
@@ -70,6 +71,15 @@ export default abstract class Element extends Base implements IElement {
     return false
   }
 
+  getMatrix(): number[] {
+    return this.attr(MATRIX)
+  }
+
+  setMatrix(m: number[]) {
+    this.attr(MATRIX, m)
+    this.onCanvasChange('matrix')
+  }
+
   getParent(): IGroup {
     return this.get('parent')
   }
@@ -129,6 +139,19 @@ export default abstract class Element extends Base implements IElement {
     // 不是高频操作直接使用 set
     this.set('visible', false)
     this.onCanvasChange('hide')
+    return this
+  }
+
+  /**
+   * 移动元素
+   * @param {number} translateX 水平移动距离
+   * @param {number} translateY 垂直移动距离
+   * @return {IElement} 元素
+   */
+  translate(translateX: number = 0, translateY: number = 0): IElement {
+    const matrix = this.getMatrix()
+    const newMatrix = [1, 0, 0, 0, 1, 0, translateX, translateY, 0]
+    this.setMatrix(newMatrix)
     return this
   }
 

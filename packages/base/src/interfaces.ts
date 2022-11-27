@@ -99,6 +99,12 @@ export interface IObservable {
   getCanvas(): ICanvas
 
   /**
+   * 获取 transform 后的矩阵
+   * @return {number[]} 矩阵
+   */
+  getMatrix(): number[]
+
+  /**
    * 获取 Shape 的基类
    * @return {IShape} Shape 的基类，用作工厂方法来获取类实例
    */
@@ -122,6 +128,13 @@ export interface IObservable {
    * @return {boolean} 是否是分组
    */
   isGroup(): boolean
+  /**
+   * 移动元素
+   * @param {number} translateX x 轴方向的移动距离
+   * @param {number} translateY y 轴方向的移动距离
+   * @return {IElement} 元素
+   */
+  translate(translateX: number, translateY?: number): IElement
   /**
    * 从父元素中移除
    * @param {boolean} destroy 是否同时销毁
