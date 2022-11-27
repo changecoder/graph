@@ -1,11 +1,11 @@
-import { isString } from "@graph/util"
-import { PX_SUFFIX } from "../constants"
-import EventController from "../event/event-controller"
+import { isString } from '@graph/util'
+import { PX_SUFFIX } from '../constants'
+import EventController from '../event/event-controller'
 
-import { ICanvas } from "../interfaces"
-import { CanvasCfg, Renderer } from "../types"
-import { isBrowser } from "../util"
-import Container from "./container"
+import { ICanvas } from '../interfaces'
+import { CanvasCfg, Point, Renderer } from '../types'
+import { isBrowser } from '../util'
+import Container from './container'
 
 export default abstract class Canvas extends Container implements ICanvas {
   constructor(cfg: CanvasCfg) {
@@ -14,7 +14,6 @@ export default abstract class Canvas extends Container implements ICanvas {
     this.initDom()
     this.initEvents()
   }
-
 
   // 初始化容器
   initContainer() {
@@ -69,7 +68,34 @@ export default abstract class Canvas extends Container implements ICanvas {
     return this.get('renderer')
   }
 
-  draw() {}
+  getPointByEvent(ev: Event): Point {
+    const { x: clientX, y: clientY } = this.getClientByEvent(ev)
+    return this.getPointByClient(clientX, clientY)
+  }
+
+  getClientByEvent(ev: Event): Point {
+    let clientInfo: MouseEvent | Touch = ev as MouseEvent
+    if ((ev as TouchEvent).touches) {
+      if (ev.type === 'touchend') {
+        clientInfo = (ev as TouchEvent).changedTouches[0]
+      } else {
+        clientInfo = (ev as TouchEvent).touches[0]
+      }
+    }
+    return {
+      x: clientInfo.clientX,
+      y: clientInfo.clientY
+    }
+  }
+
+  getPointByClient(clientX: number, clientY: number): Point {
+    const el = this.get('el')
+    const bbox = el.getBoundingClientRect()
+    return {
+      x: clientX - bbox.left,
+      y: clientY - bbox.top
+    }
+  }
 
   isCanvas() {
     return true
@@ -80,4 +106,6 @@ export default abstract class Canvas extends Container implements ICanvas {
    * @return {HTMLElement} 画布容器
    */
   abstract createDom(): HTMLElement | SVGSVGElement
+
+  draw() {}
 }

@@ -1,0 +1,33 @@
+{
+  "name": "@graph/g",
+  "version": "0.0.1",
+  "license": "MIT",
+  "files": [
+    "package.json",
+    "es",
+    "lib",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "unpkg": "dist/g.min.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "npm run clean && npm run build:umd",
+    "build:umd": "webpack --config webpack.config.js --mode production",
+    "clean": "rimraf es esm lib dist"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.2",
+    "@babel/preset-env": "^7.20.2",
+    "babel-loader": "^9.1.0",
+    "ts-loader": "^9.4.1",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.0"
+  },
+  "dependencies": {
+    "@graph/pc": "^0.0.1"
+  }
+}

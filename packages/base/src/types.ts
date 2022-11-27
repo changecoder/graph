@@ -49,6 +49,11 @@ export type CanvasCfg = {
   [key: string]: any
 }
 
+export type Point = {
+  x: number
+  y: number
+}
+
 type ColorType = string | null
 
 export type ShapeAttrs = {

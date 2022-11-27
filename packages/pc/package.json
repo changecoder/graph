@@ -1,0 +1,32 @@
+{
+  "name": "@graph/pc",
+  "version": "0.0.1",
+  "license": "MIT",
+  "files": [
+    "package.json",
+    "esm",
+    "lib",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "unpkg": "dist/g.min.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "npm run clean && run-p build:*",
+    "build:esm": "tsc -p tsconfig.json --target ES5 --module ESNext --outDir esm",
+    "build:cjs": "tsc -p tsconfig.json --target ES5 --module commonjs --outDir lib",
+    "clean": "rimraf es esm lib dist"
+  },
+  "devDependencies": {
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.0"
+  },
+  "dependencies": {
+    "@graph/base": "^0.0.1",
+    "@graph/core": "^0.0.1",
+    "@graph/svg": "^0.0.1"
+  }
+}

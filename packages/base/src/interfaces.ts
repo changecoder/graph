@@ -7,6 +7,7 @@ import {
   GroupCfg,
   Renderer,
   ElementFilterFn,
+  Point,
 } from './types'
 
 export interface ICtor<T> {
@@ -310,10 +311,29 @@ export interface IGroup extends IElement, IContainer {
    * 绘制
    */
   draw(): void
+
+  /**
+   * 根据事件对象获取画布坐标
+   * @param  {Event} ev 事件对象
+   * @return {object} 画布坐标
+   */
+  getPointByEvent(ev: Event): Point
+
+  /**
+    * 根据事件对象获取窗口坐标
+    * @param  {Event} ev 事件对象
+    * @return {object} 窗口坐标
+    */
+  getClientByEvent(ev: Event): Point
 }
 
 export interface IShape extends IElement {}
 
 export interface StringKeyObject {
   [key: string]: any
+}
+
+export interface PointInfo extends Point {
+  clientX: number
+  clientY: number
 }

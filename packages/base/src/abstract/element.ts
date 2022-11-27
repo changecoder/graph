@@ -114,7 +114,7 @@ export default abstract class Element extends Base implements IElement {
    * 属性更改后需要做的事情
    * @protected
    */
-  afterAttrsChange() {
+  afterAttrsChange(targetAttrs?: any) {
     this.onCanvasChange('attr')
   }
 
