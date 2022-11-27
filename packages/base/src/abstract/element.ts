@@ -149,7 +149,6 @@ export default abstract class Element extends Base implements IElement {
    * @return {IElement} 元素
    */
   translate(translateX: number = 0, translateY: number = 0): IElement {
-    const matrix = this.getMatrix()
     const newMatrix = [1, 0, 0, 0, 1, 0, translateX, translateY, 0]
     this.setMatrix(newMatrix)
     return this
