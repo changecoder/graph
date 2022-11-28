@@ -1,5 +1,5 @@
 import { EventEmitter, ICanvas, IGroup } from '@graph/base'
-import { deepMix, isPlainObject } from '@graph/util'
+import { deepMix, each, isPlainObject } from '@graph/util'
 
 import { IAbstractGraph } from '../interface/graph'
 import { 
@@ -17,7 +17,7 @@ import {
 } from '../types'
 import { ItemController, ModeController } from './controller'
 import Global from '../global'
-import { ICombo, IEdge, INode } from '../interface'
+import { ICombo, IEdge, IItemBase, INode } from '../interface'
 import { ITEM_TYPE } from '../constants'
 import { singleDataValidation } from '../util/validation'
 
@@ -272,6 +272,29 @@ export default abstract class AbstractGraph extends EventEmitter implements IAbs
     const comboTrees = this.get('comboTrees')
     const itemController: ItemController = this.get('itemController')
     itemController.addCombos(comboTrees, combos)
+  }
+
+  /**
+   * 当节点位置在外部发生改变时，刷新所有节点位置，重计算边
+   */
+  public refreshPositions() {
+    this.emit('beforegraphrefreshposition')
+
+    const nodes: INode[] = this.get('nodes')
+
+    let model: NodeConfig
+
+    const updateItems = (items: IItemBase[]) => {
+      each(items, (item: INode) => {
+        model = item.getModel() as NodeConfig
+        item.updatePosition({ x: model.x!, y: model.y! })
+      })
+    }
+
+    updateItems(nodes)
+
+    this.emit('aftergraphrefreshposition')
+    this.autoPaint()
   }
 
   public getNodes(): INode[] {

@@ -13,6 +13,9 @@ export interface IAbstractGraph extends EventEmitter {
   // 获取 graph 的根图形分组
   getGroup: () => IGroup
 
+  //
+  refreshPositions: () => void
+
   /**
    * 显示元素
    * @param {Item} item 指定元素

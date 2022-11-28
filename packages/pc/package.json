@@ -27,6 +27,7 @@
   "dependencies": {
     "@graph/base": "^0.0.1",
     "@graph/core": "^0.0.1",
+    "@graph/layout": "^0.0.1",
     "@graph/svg": "^0.0.1"
   }
 }

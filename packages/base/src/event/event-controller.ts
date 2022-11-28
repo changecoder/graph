@@ -34,14 +34,14 @@ export default class EventController {
     const el = this.canvas?.get('el')
 
     each(EVENTS, (eventName) => {
-      el.addEventListener(eventName, this.eventCallback)
+      el.addEventListener(eventName, this.eventCallback, { passive: true })
     })
 
     if (document) {
       // 处理拖拽到外部的问题
-      document.addEventListener('mousemove', this.onDocumentMove)
+      document.addEventListener('mousemove', this.onDocumentMove, { passive: true })
       // 处理拖拽过程中在外部释放鼠标的问题
-      document.addEventListener('mouseup', this.onDocumentMouseUp)
+      document.addEventListener('mouseup', this.onDocumentMouseUp, { passive: true })
     }
   }
 

@@ -1,4 +1,5 @@
 
+import { isFunction } from '@graph/util'
 import { IAbstractGraph } from '../../interface/graph'
 import { GraphData } from '../../types'
 
@@ -23,6 +24,15 @@ export default abstract class LayoutController {
 
   }
 
+  // 绘制
+  public refreshLayout() {
+    const { graph } = this
+    if (!graph) {
+      return
+    }
+    graph.refreshPositions()
+  }
+
   public getLayoutType(): string | string[] | null {
     return this.getLayoutCfgType(this.layoutCfg)
   }
@@ -40,6 +50,28 @@ export default abstract class LayoutController {
     }
 
     return null
+  }
+
+  // 筛选参与布局的nodes
+  protected filterLayoutData(data: GraphData, cfg: { nodesFilter?: any }) {
+    const { nodes, ...rest } = data
+    if (!nodes) {
+      return data
+    }
+
+    let nodesFilter
+    if (isFunction(cfg?.nodesFilter)) {
+      nodesFilter = cfg.nodesFilter
+    } else {
+      nodesFilter = () => true
+    }
+
+    const fNodes = nodes.filter(nodesFilter)
+
+    return {
+      nodes: fNodes,
+      ...rest
+    }
   }
 
   // 从 this.graph 获取数据

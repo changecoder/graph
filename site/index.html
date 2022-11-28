@@ -13,19 +13,18 @@
     const graph = new window.Graph.Graph({
       container: 'root',
       width: 800,
-      height: 500
+      height: 500,
+      layout: {
+        type: 'random'
+      }
     })
     const data = {
       nodes: [
         {
-          id: 'node1',
-          x: 100,
-          y: 200
+          id: 'node1'
         },
         {
-          id: 'node2',
-          x: 300,
-          y: 200
+          id: 'node2'
         }
       ]
     }
