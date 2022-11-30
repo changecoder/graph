@@ -1,4 +1,4 @@
-import { ChangeType } from '@graph/base'
+import { ChangeType } from '@cc/base'
 import Defs from '../defs'
 import { IElement } from '../interfaces'
 import { setTransform } from './svg'

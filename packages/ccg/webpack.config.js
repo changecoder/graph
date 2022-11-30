@@ -1,5 +1,4 @@
 const webpack = require('webpack')
-// eslint-disable-next-line prefer-destructuring
 const resolve = require('path').resolve
 
 module.exports = {
@@ -8,7 +7,7 @@ module.exports = {
   },
   output: {
     filename: '[name].min.js',
-    library: 'Graph',
+    library: 'CCG',
     libraryTarget: 'umd',
     libraryExport: 'default',
     path: resolve(process.cwd(), 'dist/')

@@ -1,4 +1,5 @@
-import { AbstractGroup, ChangeType } from '@graph/base'
+import { AbstractGroup, ChangeType } from '@cc/base'
+import { each } from '@cc/util'
 
 import { createSVGElement } from './util/dom'
 import * as Shape from './shape'
@@ -7,7 +8,7 @@ import Defs from './defs'
 import { drawChildren, refreshElement } from './util/draw'
 import { setTransform } from './util/svg'
 import { SVG_ATTR_MAP } from './constants'
-import { each } from '@graph/util'
+
 
 export default class Group extends AbstractGroup {
   // SVG 中分组对应实体标签 <g>

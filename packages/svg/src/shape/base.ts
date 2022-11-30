@@ -1,9 +1,9 @@
-import { AbstractShape, IShape, ShapeAttrs } from '@graph/base'
+import { AbstractShape, IShape, ShapeAttrs } from '@cc/base'
+
 import Defs from '../defs'
 import Group from '../group'
 import { createDom } from '../util/dom'
 import { setTransform } from '../util/svg'
-
 import * as Shape from './index'
 
 export default class ShapeBase extends AbstractShape implements IShape {

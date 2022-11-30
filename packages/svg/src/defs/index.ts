@@ -1,5 +1,6 @@
+import { uniqueId } from '@cc/util'
+
 import { createSVGElement } from '../util/dom'
-import { uniqueId } from '@graph/util'
 
 export default class Defs {
   id: string

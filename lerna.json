@@ -1,9 +1,7 @@
 {
+  "npmClient": "yarn",
   "packages": [
-    "packages/base",
-    "packages/canvas",
-    "packages/svg",
-    "packages/math"
+    "packages/*"
   ],
   "version": "independent",
   "useWorkspaces": true

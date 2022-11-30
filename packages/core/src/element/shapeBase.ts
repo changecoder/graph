@@ -1,5 +1,5 @@
-import { IGroup, IShape } from '@graph/base'
-import { deepMix } from '@graph/util'
+import { IGroup, IShape } from '@cc/base'
+import { deepMix } from '@cc/util'
 import { CLS_SHAPE_SUFFIX } from '../constants'
 import { ShapeOptions } from '../interface/shape'
 import { ModelConfig } from '../types'

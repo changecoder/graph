@@ -1,4 +1,4 @@
-import { AbstractEvent } from '@graph/core'
+import { AbstractEvent } from '@cc/core'
 
 import Graph from '../graph'
 

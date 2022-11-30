@@ -1,4 +1,4 @@
-import { isString } from '@graph/util'
+import { isString } from '@cc/util'
 import { PX_SUFFIX } from '../constants'
 import EventController from '../event/event-controller'
 

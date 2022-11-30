@@ -1,7 +1,7 @@
-import Graph from '@graph/pc'
+import Graph from '@cc/pc'
 
 Graph.version = '0.0.1'
 
-export * from '@graph/pc'
+export * from '@cc/pc'
 export default Graph
 export const version = '0.0.1'

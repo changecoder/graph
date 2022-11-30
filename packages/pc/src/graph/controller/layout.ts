@@ -1,4 +1,4 @@
-import { AbstractLayout, GraphData } from '@graph/core'
+import { AbstractLayout, GraphData } from '@cc/core'
 import { Layout } from '../../layout'
 import { IGraph } from '../../interface/graph'
 

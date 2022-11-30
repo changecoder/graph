@@ -1,7 +1,7 @@
-import { IGroup } from '@graph/base'
-import { deepMix, each, isArray, isObject, isString, upperFirst, clone } from '@graph/util'
+import { IGroup } from '@cc/base'
+import { deepMix, each, isArray, isObject, isString, upperFirst, clone } from '@cc/util'
 import { CFG_PREFIX, ITEM_TYPE } from '../../constants'
-import { IAbstractGraph } from '../../interface/graph'
+import { IAbstractGraph } from '../../interface'
 import { ComboConfig, ComboTree, Item, ItemType, ModelConfig } from '../../types'
 import Node from '../../item/node'
 

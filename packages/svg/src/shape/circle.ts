@@ -1,5 +1,5 @@
-import { ShapeAttrs } from '@graph/base'
-import { each } from '@graph/util'
+import { ShapeAttrs } from '@cc/base'
+import { each } from '@cc/util'
 import { SVG_ATTR_MAP } from '../constants'
 import Defs from '../defs'
 import ShapeBase from './base'

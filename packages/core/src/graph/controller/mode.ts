@@ -1,4 +1,4 @@
-import { IAbstractGraph } from '../../interface/graph'
+import { IAbstractGraph } from '../../interface'
 import { Modes } from '../../types'
 
 export default class ModeController {

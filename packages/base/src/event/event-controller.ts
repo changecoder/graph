@@ -1,4 +1,4 @@
-import { each } from '@graph/util'
+import { each } from '@cc/util'
 import { CLICK_OFFSET, EVENTS, LEFT_BTN_CODE } from '../constants'
 import { ICanvas, IShape, StringKeyObject, PointInfo } from '../interfaces'
 import { Point } from '../types'

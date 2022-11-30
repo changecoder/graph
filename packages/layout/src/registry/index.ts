@@ -1,4 +1,4 @@
-import { isObject } from '@graph/util'
+import { isObject } from '@cc/util'
 import { Base } from '../layout/base'
 
 const map: Map<string, any> = new Map()

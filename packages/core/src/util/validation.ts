@@ -1,4 +1,5 @@
-import { isString } from '@graph/util'
+import { isString } from '@cc/util'
+
 import { ITEM_TYPE } from '../constants'
 import { ComboConfig, EdgeConfig, ItemType, NodeConfig } from '../types'
 

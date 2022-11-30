@@ -1,5 +1,5 @@
 
-import { isObject, upperFirst, isFunction, each } from '@graph/util'
+import { isObject, upperFirst, isFunction, each } from '@cc/util'
 import { IContainer, IElement, IGroup, IShape } from '../interfaces'
 import { ElementFilterFn } from '../types'
 import { removeChild, setCanvas } from '../util'

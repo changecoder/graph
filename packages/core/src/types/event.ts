@@ -1,4 +1,5 @@
-import { ICanvas, Event as GraphEvent } from '@graph/base'
+import { ICanvas, Event as GraphEvent } from '@cc/base'
+
 import { IShapeBase, Item } from '.'
 import { GraphTimingEvents } from './timing'
 

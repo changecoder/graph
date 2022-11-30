@@ -1,6 +1,6 @@
-import { IGroup, IShape } from '@graph/base'
-import { isFunction, isString, upperFirst } from '@graph/util'
-import { ShapeDefine, ShapeOptions } from '../interface/shape'
+import { IGroup, IShape } from '@cc/base'
+import { isFunction, isString, upperFirst } from '@cc/util'
+import { ShapeDefine, ShapeOptions } from '../interface'
 import { ModelConfig } from '../types'
 
 /**

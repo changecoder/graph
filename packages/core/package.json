@@ -1,5 +1,5 @@
 {
-  "name": "@graph/core",
+  "name": "@cc/core",
   "version": "0.0.1",
   "license": "MIT",
   "files": [
@@ -20,7 +20,7 @@
     "clean": "rimraf es esm lib dist"
   },
   "dependencies": {
-    "@graph/base": "^0.0.1",
-    "@graph/util": "^0.0.1"
+    "@cc/base": "0.0.1",
+    "@cc/util": "0.0.1"
   }
 }

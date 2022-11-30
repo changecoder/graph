@@ -1,4 +1,4 @@
-import { IElement as IBaseElement, IGroup as IBaseGroup, IShape as IBaseShape } from '@graph/base'
+import { IElement as IBaseElement, IGroup as IBaseGroup, IShape as IBaseShape } from '@cc/base'
 import Defs from './defs'
 
 export interface IElement extends IBaseElement {

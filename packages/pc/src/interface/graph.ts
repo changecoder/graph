@@ -1,4 +1,4 @@
-import {  AbstractGraph } from '@graph/core'
+import {  AbstractGraph } from '@cc/core'
 
 export type DataUrlType = 'image/png' | 'image/jpeg' | 'image/webp' | 'image/bmp'
 

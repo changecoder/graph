@@ -7,26 +7,19 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "build": "lerna run build",
+    "build:core": "cd ./packages/core && yarn build",
+    "build:pc": "cd ./packages/pc && yarn build",
+    "build:ccg": "cd ./packages/ccg && yarn build",
+    "build:base": "cd ./packages/base && yarn build",
+    "build:util": "cd ./packages/util && yarn build",
+    "build:svg": "cd ./packages/svg && yarn build",
+    "build:layout": "cd ./packages/layout && yarn build",
     "link": "lerna link",
-    "lint": "npm run eslint",
-    "lint-staged": "lint-staged",
-    "eslint": "eslint --ext .html,.ts,.js ./packages",
+    "lint": "yarn eslint",
+    "eslint": "eslint --ext .html,.ts,.js ./packages/*/src",
     "eslint-fix": "eslint --fix --ext .html,.ts,.js ./packages",
     "prettier": "prettier --write './packages/**/*.{js,ts,md}'",
-    "test": "lerna run test",
-    "ci": "npm run lint && npm run bootstrap && npm run build && npm run test"
-  },
-  "lint-staged": {
-    "**/*.{js,ts,md}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS && npm run lint"
-    }
+    "ci": "yarn lint && yarn bootstrap && yarn build"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.44.0",
@@ -36,9 +29,7 @@
     "eslint-plugin-html": "^7.1.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "husky": "^8.0.2",
     "lerna": "^6.0.3",
-    "lint-staged": "^13.0.3",
     "prettier": "^2.8.0",
     "typescript": "^4.9.3"
   }

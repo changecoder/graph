@@ -1,4 +1,4 @@
-import { mix, isObject, each, isArray } from '@graph/util'
+import { mix, isObject, each, isArray } from '@cc/util'
 
 import Base from './base'
 import { ICanvas, ICtor, IElement, IGroup, StringKeyObject } from '../interfaces'

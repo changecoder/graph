@@ -1,10 +1,11 @@
-import { IGroup, IShape } from '@graph/base'
-import { ShapeOptions } from '../interface/shape'
+import { IGroup, IShape } from '@cc/base'
+import { isArray } from '@cc/util'
+
+import { ShapeOptions } from '../interface'
 import { ModelConfig, NodeConfig } from '../types'
 import Shape from './shape'
 import { shapeBase } from './shapeBase'
 import Global from '../global'
-import { isArray } from '@graph/util'
 
 const singleNode: ShapeOptions = {
   itemType: 'node',

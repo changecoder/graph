@@ -1,5 +1,5 @@
-import { AbstractGraph, GraphOptions } from '@graph/core'
-import { Canvas as GSVGCanvas } from '@graph/svg'
+import { AbstractGraph, GraphOptions } from '@cc/core'
+import { Canvas as GSVGCanvas } from '@cc/svg'
 
 import { DataUrlType, IGraph } from '../interface/graph'
 import { LayoutController, EventController } from './controller'

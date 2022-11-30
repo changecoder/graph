@@ -1,5 +1,5 @@
 {
-  "name": "@graph/util",
+  "name": "@cc/util",
   "version": "0.0.1",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -15,9 +15,7 @@
     "build": "npm run clean && run-p build:*",
     "build:esm": "tsc -p tsconfig.json --target ES5 --module ESNext --outDir esm",
     "build:cjs": "tsc -p tsconfig.json --target ES5 --module commonjs --outDir lib",
-    "clean": "rm -rf lib && rm -rf esm",
-    "tsc": "tsc --noEmit",
-    "typecheck": "tsc --noEmit"
+    "clean": "rm -rf lib && rm -rf esm"
   },
   "license": "MIT",
   "devDependencies": {

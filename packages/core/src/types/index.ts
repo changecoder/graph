@@ -1,5 +1,6 @@
 
-import { IShape } from '@graph/base'
+import { IShape } from '@cc/base'
+
 import { IEdge, INode, ICombo } from '../interface/item'
 
 export * from './event'

@@ -1,4 +1,4 @@
-import { mix } from '@graph/util'
+import { mix } from '@cc/util'
 
 import EventEmitter from '../event-emitter'
 import { IBase } from '../interfaces'

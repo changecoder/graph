@@ -1,4 +1,4 @@
-import { EventEmitter, IGroup } from '@graph/base'
+import { EventEmitter, IGroup } from '@cc/base'
 
 import { GraphData, GraphOptions, Item, ItemType, ModelConfig, GEvent, IGGraphEvent } from '../types'
 import Graph from '../graph/graph'

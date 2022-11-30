@@ -1,4 +1,4 @@
-import { AbstractCanvas, CanvasCfg, ChangeType, IShape } from '@graph/base'
+import { AbstractCanvas, CanvasCfg, ChangeType, IShape } from '@cc/base'
 
 import * as Shape from './shape'
 import Group from './group'

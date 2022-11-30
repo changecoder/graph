@@ -1,5 +1,6 @@
-import { IGroup } from '@graph/base'
-import { isPlainObject, uniqueId, clone } from '@graph/util'
+import { IGroup } from '@cc/base'
+import { isPlainObject, uniqueId, clone } from '@cc/util'
+
 import { IItemBase, IItemBaseConfig } from '../interface'
 import { ComboConfig, EdgeConfig, IShapeBase, ItemType, ModelConfig, NodeConfig } from '../types'
 import Shape from '../element/shape'

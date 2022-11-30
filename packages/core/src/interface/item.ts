@@ -1,4 +1,5 @@
-import { IGroup, Point } from '@graph/base'
+import { IGroup, Point } from '@cc/base'
+
 import { ComboConfig, EdgeConfig, Indexable, IShapeBase, Item, ItemType, ModelConfig, NodeConfig } from '../types'
 
 // item 的配置项

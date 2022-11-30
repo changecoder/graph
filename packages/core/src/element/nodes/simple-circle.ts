@@ -1,5 +1,6 @@
-import { IGroup, IShape } from '@graph/base'
-import { ShapeOptions } from '../../interface/shape'
+import { IGroup, IShape } from '@cc/base'
+
+import { ShapeOptions } from '../../interface'
 import { NodeConfig, ShapeStyle } from '../../types'
 import Shape from '../shape'
 

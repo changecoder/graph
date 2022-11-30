@@ -1,5 +1,5 @@
-import { EventEmitter, ICanvas, IGroup } from '@graph/base'
-import { deepMix, each, isPlainObject } from '@graph/util'
+import { EventEmitter, ICanvas, IGroup } from '@cc/base'
+import { deepMix, each, isPlainObject } from '@cc/util'
 
 import { IAbstractGraph } from '../interface/graph'
 import { 

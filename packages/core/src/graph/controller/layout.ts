@@ -1,6 +1,6 @@
 
-import { isFunction } from '@graph/util'
-import { IAbstractGraph } from '../../interface/graph'
+import { isFunction } from '@cc/util'
+import { IAbstractGraph } from '../../interface'
 import { GraphData } from '../../types'
 
 export default abstract class LayoutController {
