@@ -26,7 +26,7 @@ export default class GraphEvent {
   // 触发事件的路径
   propagationPath: any[] = []
 
-  constructor(type: string, event: Event) {
+  constructor(type: string, event: any) {
     this.type = type
     this.name = type
     this.timeStamp = event.timeStamp

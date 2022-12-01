@@ -20,7 +20,7 @@ export type CanvasEventType = `canvas:${CanvasInteractionEvent}`
 
 export type GraphTimingEventType = GraphTimingEvents
 
-export type GEvent = NodeEventType | 
+export type CCGEvent = NodeEventType | 
   EdgeEventType | 
   ComboEventType | 
   CanvasEventType | 
@@ -29,7 +29,7 @@ export type GEvent = NodeEventType |
   CommonInteractionEvent | 
   (string & {})
 
-export interface IGGraphEvent extends GraphEvent {
+export interface ICCGGraphEvent extends GraphEvent {
   item: Item | null
   target: IShapeBase & ICanvas
   [key: string]: unknown

@@ -1,6 +1,6 @@
 import { EventEmitter, IGroup } from '@cc/base'
 
-import { GraphData, GraphOptions, Item, ItemType, ModelConfig, GEvent, IGGraphEvent } from '../types'
+import { GraphData, GraphOptions, Item, ItemType, ModelConfig, CCGEvent, ICCGGraphEvent } from '../types'
 import Graph from '../graph/graph'
 import { ICombo, IEdge, INode } from './item'
 
@@ -65,10 +65,10 @@ export interface IAbstractGraph extends EventEmitter {
   layout: () => void
 
   // 重新定义监听函数，复写参数类型
-  on: <T = IGGraphEvent>(eventName: GEvent, callback: (e: T) => void, once?: boolean) => this
+  on: <T = ICCGGraphEvent>(eventName: CCGEvent, callback: (e: T) => void, once?: boolean) => this
 
   // 移除指定的監聽函數
-  off: <T = IGGraphEvent>(eventName: GEvent, callback: (e: T) => void, once?: boolean) => this
+  off: <T = ICCGGraphEvent>(eventName: CCGEvent, callback: (e: T) => void, once?: boolean) => this
 
   // 销毁画布
   destroy: () => void

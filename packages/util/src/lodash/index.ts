@@ -16,4 +16,5 @@ export { default as each } from './each'
 export { default as toString } from './to-string'
 export { default as uniqueId } from './unique-id'
 export { default as clone } from './clone'
+export { default as wrapBehavior } from './wrap-behavior'
 

@@ -12,8 +12,8 @@ import {
   ModelConfig,
   NodeConfig,
   NodeMap,
-  GEvent,
-  IGGraphEvent
+  CCGEvent,
+  ICCGGraphEvent
 } from '../types'
 import { ItemController, ModeController } from './controller'
 import Global from '../global'
@@ -341,7 +341,7 @@ export default abstract class AbstractGraph extends EventEmitter implements IAbs
     }
   }
 
-  public on<T = IGGraphEvent>(eventName: GEvent, callback: (e: T) => void, once?: boolean): this {
+  public on<T = ICCGGraphEvent>(eventName: CCGEvent, callback: (e: T) => void, once?: boolean): this {
     return super.on(eventName, callback, once)
   }
 

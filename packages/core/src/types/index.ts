@@ -3,8 +3,6 @@ import { IShape } from '@cc/base'
 
 import { IEdge, INode, ICombo } from '../interface/item'
 
-export * from './event'
-
 // Node Edge Combo 实例
 export type Item = INode | IEdge | ICombo
 
@@ -170,3 +168,6 @@ export type ShapeStyle = Partial<{
 export interface Indexable<T> {
   [key: string]: T
 }
+
+export * from './event'
+export * from './behavior'
