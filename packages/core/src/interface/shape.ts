@@ -10,5 +10,8 @@ export type ShapeOptions = Partial<{
   itemType: string
   shapeType: string
 
+  //
+  getOptions: (cfg: ModelConfig) => ModelConfig
+
   [key: string]: any
 }>

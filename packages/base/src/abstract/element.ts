@@ -1,8 +1,8 @@
 import { mix, isObject, each, isArray } from '@cc/util'
 
 import Base from './base'
-import { ICanvas, ICtor, IElement, IGroup, StringKeyObject } from '../interfaces'
-import { ChangeType, ShapeAttrs, ShapeBase} from '../types'
+import { ICanvas, ICtor, IElement, IGroup } from '../interfaces'
+import { ChangeType, ShapeAttrs, ShapeBase, LooseObject} from '../types'
 import { removeFromArray } from '../util'
 import GraphEvent from '../event/graph-event'
 import { MATRIX } from '../constants'
@@ -36,7 +36,7 @@ export default abstract class Element extends Base implements IElement {
     this.initAttrs(attrs)
   }
   
-  getDefaultCfg(): StringKeyObject {
+  getDefaultCfg(): LooseObject {
     return {
       visible: true,
       capture: true,
@@ -95,7 +95,7 @@ export default abstract class Element extends Base implements IElement {
     }
     if (isObject(name)) {
       for (const k in name) {
-        this.setAttr(k, (name as StringKeyObject)[k])
+        this.setAttr(k, (name as LooseObject)[k])
       }
       this.afterAttrsChange()
       return this
@@ -172,7 +172,7 @@ export default abstract class Element extends Base implements IElement {
 
   clone() {
     const originAttrs = this.attrs
-    const attrs: StringKeyObject = {}
+    const attrs: LooseObject = {}
     each(originAttrs, (i: any, k: string | number) => {
       if (isArray(originAttrs[k])) {
         attrs[k] = _cloneArrayAttr(originAttrs[k])

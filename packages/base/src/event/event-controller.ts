@@ -1,7 +1,7 @@
 import { each } from '@cc/util'
 import { CLICK_OFFSET, EVENTS, LEFT_BTN_CODE } from '../constants'
-import { ICanvas, IShape, StringKeyObject, PointInfo } from '../interfaces'
-import { Point } from '../types'
+import { ICanvas, IShape, PointInfo } from '../interfaces'
+import { LooseObject } from '../types'
 import { bubbleEvent, emitTargetEvent } from '../util/event'
 import GraphEvent from './graph-event'
 
@@ -98,7 +98,7 @@ export default class EventController {
   triggerEvent(type: string, ev: MouseEvent) {
     const pointInfo = this.getPointInfo(ev)
     const shape = this.getShape(ev)
-    const method = (this as StringKeyObject)[`on${type}`]
+    const method = (this as LooseObject)[`on${type}`]
     let leaveCanvas = false
     if (method) {
       method.call(this, shape, ev, pointInfo)

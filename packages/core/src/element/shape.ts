@@ -1,6 +1,6 @@
 import { IGroup, IShape } from '@cc/base'
 import { isFunction, isString, upperFirst } from '@cc/util'
-import { ShapeDefine, ShapeOptions } from '../interface'
+import { ShapeOptions } from '../interface'
 import { ModelConfig } from '../types'
 
 /**
@@ -57,7 +57,7 @@ export default class Shape {
 
   public static registerNode(
     shapeType: string,
-    nodeDefinition: ShapeOptions | ShapeDefine,
+    nodeDefinition: ShapeOptions,
     extendShapeType?: string
   ) {
     const shapeFactory = Shape.Node

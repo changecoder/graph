@@ -1,4 +1,4 @@
-import { EventEmitter, ICanvas, IGroup } from '@cc/base'
+import { EventEmitter, ICanvas, IGroup, LooseObject } from '@cc/base'
 import { deepMix, each, isPlainObject } from '@cc/util'
 
 import { IAbstractGraph } from '../interface/graph'
@@ -37,7 +37,7 @@ export interface PrivateGraphOption extends GraphOptions {
 }
 
 export default abstract class AbstractGraph extends EventEmitter implements IAbstractGraph {
-  protected cfg: GraphOptions & { [key: string]: any }
+  protected cfg: GraphOptions & LooseObject
 
   public destroyed: boolean
 

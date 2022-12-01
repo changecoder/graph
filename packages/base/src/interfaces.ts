@@ -295,7 +295,7 @@ export interface IGroup extends IElement, IContainer {
    */
   isEntityGroup(): boolean
 
-  shapeMap: StringKeyObject
+  shapeMap: LooseObject
 }
 
 /**
@@ -343,10 +343,6 @@ export interface IGroup extends IElement, IContainer {
 }
 
 export interface IShape extends IElement {}
-
-export interface StringKeyObject {
-  [key: string]: any
-}
 
 export interface PointInfo extends Point {
   clientX: number

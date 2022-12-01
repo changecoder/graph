@@ -12,7 +12,7 @@ const singleNode: ShapeOptions = {
   // 单个图形的类型
   shapeType: 'single-node',
   getSize(cfg: ModelConfig): number[] {
-    let size: number | number[] = cfg.size || this.getOptions({})!.size || Global.defaultNode.size
+    let size: number | number[] = cfg.size || this.getOptions!({})!.size || Global.defaultNode.size
 
     // size 是数组，但长度为1，则补长度为2
     if (isArray(size) && size.length === 1) {
