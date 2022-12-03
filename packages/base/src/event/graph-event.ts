@@ -8,6 +8,12 @@ export default class GraphEvent {
   // 事件名称
   name: string
 
+  // 画布上的位置 x
+  x!: number
+
+  // 画布上的位置 y
+  y!: number
+
   // 是否允许冒泡
   bubbles: boolean = true
 
@@ -16,6 +22,12 @@ export default class GraphEvent {
 
   // 触发对象
   target: LooseObject | null = null
+
+  /**
+   * 监听对象
+   * @type {object}
+   */
+  currentTarget: LooseObject | null = null
 
   // 触发事件的图形
   shape: IShape | null = null

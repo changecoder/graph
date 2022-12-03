@@ -24,16 +24,16 @@ export interface IObservable {
    * @param  eventName 事件名
    * @param callback  回调函数
    */
-  on(eventName: string, callback: Function): void
+  on(eventName: string, callback: Function): this
   /**
    * 移除事件
    */
-  off(): void
+  off(): this
   /**
    * 移除事件
    * @param eventName 事件名
    */
-  off(eventName: string): void
+  off(eventName: string): this
   /**
    * 移除事件
    * @param eventName 事件名

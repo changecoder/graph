@@ -78,7 +78,7 @@ export default class EventEmitter {
    * @param evt
    * @param callback
    */
-  off(evt?: string, callback?: Function) {
+  off(evt?: string, callback?: Function): this {
     if (!evt) {
       // evt 为空全部清除
       this._events = {}

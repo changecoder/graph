@@ -44,6 +44,7 @@ export default abstract class Base extends EventEmitter implements IBase {
     this.cfg = {
       destroyed: true
     }
+    this.off()
     this.destroyed = true
   }
 

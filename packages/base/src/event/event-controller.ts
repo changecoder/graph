@@ -1,7 +1,7 @@
 import { each } from '@cc/util'
 import { CLICK_OFFSET, EVENTS, LEFT_BTN_CODE } from '../constants'
 import { ICanvas, IShape, PointInfo } from '../interfaces'
-import { LooseObject } from '../types'
+import { LooseObject, Point } from '../types'
 import { bubbleEvent, emitTargetEvent } from '../util/event'
 import GraphEvent from './graph-event'
 
@@ -54,7 +54,8 @@ export default class EventController {
       if (this.dragging || this.currentShape) {
         // 还在拖拽过程中
         if (this.dragging) {
-          this.emitEvent('drag', ev, this.draggingShape)
+          const pointInfo = this.getPointInfo(ev)
+          this.emitEvent('drag', ev, pointInfo, this.draggingShape)
         }
       }
     }
@@ -67,11 +68,12 @@ export default class EventController {
     if (el !== ev.target) {
       // 不在 canvas 上移动
       if (this.dragging) {
+        const pointInfo = this.getPointInfo(ev)
         if (this.draggingShape) {
           // 如果存在拖拽的图形，则也触发 drop 事件
-          this.emitEvent('drop', ev, undefined)
+          this.emitEvent('drop', ev, pointInfo)
         }
-        this.emitEvent('dragend', ev, this.draggingShape)
+        this.emitEvent('dragend', ev, pointInfo, this.draggingShape)
         this.afterDrag(this.draggingShape, ev)
       }
     }
@@ -118,7 +120,7 @@ export default class EventController {
       this.mousedownPoint = pointInfo
       this.mousedownTimeStamp = ev.timeStamp
     }
-    this.emitEvent('mousedown', ev, shape)
+    this.emitEvent('mousedown', ev, pointInfo, shape)
   }
 
   // 大量的图形事件，都通过 mousemove 模拟
@@ -135,7 +137,7 @@ export default class EventController {
       }
       // 如果存在 draggingShape 则会在 draggingShape 上触发 drag 事件，冒泡到 canvas 上
       // 否则在 canvas 上触发 drag 事件
-      this.emitEvent('drag', event, draggingShape)
+      this.emitEvent('drag', event, pointInfo, draggingShape)
     } else {
       const mousedownPoint = this.mousedownPoint
       if (mousedownPoint) {
@@ -153,49 +155,45 @@ export default class EventController {
             draggingShape.set('capture', false) // 禁止继续拾取，否则无法进行 dragover,dragenter,dragleave,drop的判定
             this.draggingShape = draggingShape
             this.dragging = true
-            this.emitEvent('dragstart', event, draggingShape)
+            this.emitEvent('dragstart', event, pointInfo, draggingShape)
             // 清理按下鼠标时缓存的值
             this.mousedownShape = undefined
             this.mousedownPoint = undefined
           } else if (!mousedownShape && canvas.get('draggable')) {
             // 设置了 draggable 的 canvas 才能触发 drag 相关的事件
             this.dragging = true
-            this.emitEvent('dragstart', event)
+            this.emitEvent('dragstart', event, pointInfo)
             // 清理按下鼠标时缓存的值
             this.mousedownShape = undefined
             this.mousedownPoint = undefined
           } else {
-            this.emitMouseoverEvents(event, preShape, shape)
-            this.emitEvent('mousemove', event, shape)
+            this.emitEvent('mousemove', event, pointInfo, shape)
           }
         } else {
-          this.emitMouseoverEvents(event, preShape, shape)
-          this.emitEvent('mousemove', event, shape)
+          this.emitEvent('mousemove', event, pointInfo, shape)
         }
       } else {
-        // 没有按键按下时，则直接触发 mouse over 相关的各种事件
-        this.emitMouseoverEvents(event, preShape, shape)
         // 始终触发移动
-        this.emitEvent('mousemove', event, shape)
+        this.emitEvent('mousemove', event, pointInfo, shape)
       }
     }
   }
 
   // 按键抬起时，会终止拖拽、触发点击
-  onmouseup(shape: IShape, ev: MouseEvent) {
+  onmouseup(shape: IShape, ev: MouseEvent, pointInfo: PointInfo) {
     if (ev.button === LEFT_BTN_CODE) {
       const draggingShape = this.draggingShape
       if (this.dragging) {
         // 存在可以拖拽的图形，同时拖拽到其他图形上时触发 drag 事件
         if (draggingShape) {
-          this.emitEvent('drop', ev, shape)
+          this.emitEvent('drop', ev, pointInfo, shape)
         }
-        this.emitEvent('dragend', ev, draggingShape)
+        this.emitEvent('dragend', ev, pointInfo, draggingShape)
         this.afterDrag(draggingShape, ev)
       } else {
-        this.emitEvent('mouseup', ev, shape) // 先触发 mouseup 再触发 click
+        this.emitEvent('mouseup', ev, pointInfo, shape) // 先触发 mouseup 再触发 click
         if (shape === this.mousedownShape) {
-          this.emitEvent('click', ev, shape)
+          this.emitEvent('click', ev, pointInfo, shape)
         }
         this.mousedownShape = undefined
         this.mousedownPoint = undefined
@@ -205,18 +203,12 @@ export default class EventController {
 
   // dragover 不等同于 mouseover，而等同于 mousemove
   emitDragoverEvents(event: MouseEvent, fromShape: IShape | undefined, toShape: IShape, isCanvasEmit: boolean) {
-    console.log('暂未实现')
-  }
-
-  // mouseleave 和 mouseenter 都是成对存在的
-  // mouseenter 和 mouseover 同时触发
-  emitMouseoverEvents(event: MouseEvent, fromShape: IShape, toShape: IShape) {
-    console.log('暂未实现')
+    // 暂不需要实现
   }
 
   // 触发事件
-  emitEvent(type: string, event: Event, shape?: IShape) {
-    const eventObj = this.getEventObj(type, event, shape)
+  emitEvent(type: string, event: Event, pointInfo: PointInfo, shape?: IShape) {
+    const eventObj = this.getEventObj(type, event, pointInfo, shape)
     // 存在 shape 触发，则进行冒泡处理
     if (shape) {
       eventObj.shape = shape
@@ -244,8 +236,10 @@ export default class EventController {
     }
   }
 
-  getEventObj(type: string, event: Event, target?: IShape) {
+  getEventObj(type: string, event: Event, point: PointInfo,  target?: IShape) {
     const eventObj = new GraphEvent(type, event)
+    eventObj.x = point.x
+    eventObj.y = point.y
     if (target) {
       eventObj.propagationPath.push(target)
     }

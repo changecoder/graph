@@ -5,7 +5,7 @@ import { ICanvas, ICtor, IElement, IGroup } from '../interfaces'
 import { ChangeType, ShapeAttrs, ShapeBase, LooseObject} from '../types'
 import { removeFromArray } from '../util'
 import GraphEvent from '../event/graph-event'
-import { MATRIX } from '../constants'
+import { DELEGATION_SPLIT, MATRIX, WILDCARD } from '../constants'
 
 // 数组嵌套对象的场景不考虑
 function _cloneArrayAttr(arr: any[]) {
@@ -192,13 +192,35 @@ export default abstract class Element extends Base implements IElement {
     return this
   }
 
+  destroy() {
+    const destroyed = this.destroyed
+    if (destroyed) {
+      return
+    }
+    this.attrs = {}
+    super.destroy()
+  }
+
   /**
    * 触发委托事件
    * @param  {string}     type 事件类型
    * @param  {GraphEvent} eventObj 事件对象
    */
   emitDelegation(type: string, eventObj: GraphEvent) {
-    // 暂未实现委托事件触发
+    // 暂不实现
+  }
+
+  private emitDelegateEvent(element: any, name: string, eventObj: GraphEvent) {
+    const events = this.getEvents()
+    // 事件委托的形式 name:type
+    const eventName = name + DELEGATION_SPLIT + eventObj.type
+    if (events[eventName] || events[WILDCARD]) {
+      // 对于通配符 *，事件名称 = 委托事件名称
+      eventObj.name = eventName
+      eventObj.currentTarget = element
+      // 将委托事件的监听对象 delegateObject 挂载到事件对象上
+      this.emit(eventName, eventObj)
+    }
   }
 
   abstract getShapeBase(): ShapeBase

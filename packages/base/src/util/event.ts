@@ -5,6 +5,7 @@ import { ICanvas, IContainer, IElement, IGroup, IShape } from '../interfaces'
 export function emitTargetEvent(target: IShape | ICanvas, type: string, eventObj: GraphEvent) {
   eventObj.name = type
   eventObj.target = target
+  eventObj.currentTarget = target
   target.emit(type, eventObj)
 }
 
