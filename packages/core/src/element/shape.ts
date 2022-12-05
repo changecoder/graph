@@ -1,7 +1,7 @@
 import { IGroup, IShape } from '@cc/base'
 import { isFunction, isString, upperFirst } from '@cc/util'
 import { ShapeOptions } from '../interface'
-import { IPoint, ModelConfig } from '../types'
+import { IPoint, Item, ModelConfig, UpdateType } from '../types'
 
 /**
  * 工厂方法的基类
@@ -21,6 +21,27 @@ export const ShapeFactoryBase = {
     return shape.getControlPoints!(cfg)
   },
 
+  /**
+   * 是否允许更新，不重新绘制图形
+   * @param  {String} type 类型
+   * @return {Boolean} 是否允许使用更新
+   */
+  shouldUpdate(type: string): boolean {
+    const shape = this.getShape(type)
+    return !!shape.update
+  },
+
+  baseUpdate(type: string, cfg: ModelConfig, item: Item, updateType?: UpdateType) {
+    const shape = this.getShape(type)
+
+    // 防止没定义 update 函数
+    if (shape.update) {
+      // shape.mergeStyle = updateType === 'move' || updateType === 'bbox' ? {} : shape.getOptions?.(cfg);
+      shape.mergeStyle = shape.getOptions?.(cfg)
+      shape.update?.(cfg, item, updateType)
+    }
+  },
+  
   draw(type: string, cfg: ModelConfig, group: IGroup): IShape {
     const shape = this.getShape(type)
     const rst = shape.draw!(cfg, group)

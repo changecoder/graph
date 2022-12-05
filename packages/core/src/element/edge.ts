@@ -1,11 +1,11 @@
 import { IGroup, IShape, LooseObject, Point } from '@cc/base'
-import { mix } from '@cc/util'
+import { mix, isNumber } from '@cc/util'
 
 import { ShapeOptions } from '../interface'
 import Global from '../global'
 
 import { each } from '@cc/util'
-import { EdgeConfig, IPoint, ModelConfig, ShapeStyle } from '../types'
+import { EdgeConfig, IPoint, Item, ModelConfig, ShapeStyle, UpdateType } from '../types'
 import { CLS_SHAPE } from '../constants'
 import { shapeBase } from './shapeBase'
 import Shape from './shape'
@@ -53,6 +53,51 @@ const singleEdge: ShapeOptions = {
     return cfg.controlPoints
   },
   
+  updateShapeStyle(cfg: EdgeConfig, item: Item, updateType?: UpdateType) {
+    const group = item.getContainer()
+    const shape = item.getKeyShape?.() || group['shapeMap']['edge-shape']
+
+    const { size } = cfg
+    cfg = this.getPathPoints!(cfg)
+
+    const { startPoint, endPoint } = cfg
+
+    const controlPoints = this.getControlPoints!(cfg)
+    let points = [startPoint] // 添加起始点
+    // 添加控制点
+    if (controlPoints) {
+      points = points.concat(controlPoints)
+    }
+    // 添加结束点
+    points.push(endPoint)
+
+    const currentAttr = shape.attr()
+    const previousStyle = cfg.style || {}
+    if (previousStyle.stroke === undefined) {
+      previousStyle.stroke = cfg.color
+    }
+    const source = cfg.sourceNode
+    const target = cfg.targetNode
+    let routeCfg: { [key: string]: unknown } = { radius: previousStyle.radius }
+    if (!controlPoints) {
+      routeCfg = { source, target, offset: previousStyle.offset, radius: previousStyle.radius }
+    }
+    const path = (this as any).getPath(points, routeCfg)
+    const style = { ...cfg.style }
+    if (style.lineWidth === undefined) {
+      style.lineWdith = (isNumber(size) ? size : (size as number[])?.[0]) || currentAttr.lineWidth
+    }
+    if (style.path === undefined) {
+      style.path = path
+    }
+    if (style.stroke === undefined) {
+      style.stroke = currentAttr.stroke || cfg.color
+    } 
+    if (shape) {
+      shape.attr(style)
+    }
+  },
+
   getShapeStyle(cfg: EdgeConfig): ShapeStyle {
     const { style: defaultStyle } = this.options as ModelConfig
     const strokeStyle: ShapeStyle = {

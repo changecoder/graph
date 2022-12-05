@@ -7,6 +7,7 @@ export { default as isFunction } from './is-function'
 export { default as isString } from './is-string'
 export { default as isPlainObject } from './is-plain-object'
 export { default as isObjectLike } from './is-object-like'
+export { default as isNumber } from './is-number'
 
 // other
 export { default as mix, default as assign } from './mix'

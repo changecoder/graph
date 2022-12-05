@@ -59,6 +59,15 @@ export interface IItemBase {
   // 更改是否显示
   changeVisibility: (visible: boolean) => void
 
+  /**
+   * 刷新一般用于处理几种情况
+   * 1. item model 在外部被改变
+   * 2. 边的节点位置发生改变，需要重新计算边
+   *
+   * 因为数据从外部被修改无法判断一些属性是否被修改，直接走位置和 shape 的更新
+   */
+  refresh: (updateType?: UpdateType) => void
+
   // 是否可见
   isVisible: () => boolean
 

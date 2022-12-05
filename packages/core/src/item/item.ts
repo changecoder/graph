@@ -168,6 +168,33 @@ export default class ItemBase implements IItemBase {
     return bbox
   }
   
+  public refresh(updateType?: UpdateType) {
+    const model: ModelConfig = this.get('model')
+    // 更新元素位置
+    this.updatePosition(model)
+    // 更新元素内容，样式
+    this.updateShape(updateType)
+  }
+
+  /**
+   * 更新元素内容，样式
+   */
+  public updateShape(updateType?: UpdateType) {
+    const shapeFactory = this.get('shapeFactory')
+    const model = this.get('model')
+    const shape = model.type
+    // 判定是否允许更新
+    // 1. 注册的节点允许更新（即有继承的/复写的 update 方法，即 update 方法没有被复写为 undefined）
+    // 2. 更新后的 shape 等于原先的 shape
+    if (shapeFactory.shouldUpdate(shape) && shape === this.get('currentShape')) {
+      const updateCfg = this.getShapeCfg(model, updateType)
+      shapeFactory.baseUpdate(shape, updateCfg, this, updateType)
+    } else {
+      // 如果不满足上面两种状态，重新绘制
+      this.draw()
+    }
+  }
+
   /**
    * 更新位置，避免整体重绘
    * @param {object} cfg 待更新数据

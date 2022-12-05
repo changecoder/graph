@@ -2,7 +2,7 @@ import { IGroup, IShape } from '@cc/base'
 import { deepMix } from '@cc/util'
 import { CLS_SHAPE_SUFFIX } from '../constants'
 import { ShapeOptions } from '../interface/shape'
-import { ModelConfig } from '../types'
+import { Item, ModelConfig, UpdateType } from '../types'
 
 export const shapeBase: ShapeOptions = {
   draw(cfg: ModelConfig, group: IGroup): IShape {
@@ -22,5 +22,8 @@ export const shapeBase: ShapeOptions = {
       this.getCustomConfig(cfg) || {},
       cfg
     )
+  },
+  update(cfg: ModelConfig, item: Item, updateType?: UpdateType) {
+    (this as any).updateShapeStyle(cfg, item, updateType)
   }
 }

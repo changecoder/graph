@@ -285,17 +285,38 @@ export default abstract class AbstractGraph extends EventEmitter implements IAbs
     this.emit('beforegraphrefreshposition')
 
     const nodes: INode[] = this.get('nodes')
-
+    const updatedNodes: { [key: string]: boolean } = {}
     let model: NodeConfig
 
     const updateItems = (items: IItemBase[]) => {
       each(items, (item: INode) => {
         model = item.getModel() as NodeConfig
-        item.updatePosition({ x: model.x!, y: model.y! })
+        const changed = item.updatePosition({ x: model.x!, y: model.y! })
+        updatedNodes[model.id] = changed
       })
     }
 
     updateItems(nodes)
+
+    const edges: IEdge[] = this.get('edges')
+
+
+
+    each(edges, (edge: IEdge) => {
+      const sourceModel = edge.getSource().getModel()
+      const target = edge.getTarget()
+      // 避免 target 是纯对象的情况下调用 getModel 方法
+      // 拖动生成边的时候 target 会是纯对象
+      if (!isPlainObject(target)) {
+        const targetModel = (target as INode | ICombo).getModel()
+        if (
+          updatedNodes[sourceModel.id as string] ||
+          updatedNodes[targetModel.id as string]
+        ) {
+          edge.refresh()
+        }
+      }
+    })
 
     this.emit('aftergraphrefreshposition')
     this.autoPaint()
