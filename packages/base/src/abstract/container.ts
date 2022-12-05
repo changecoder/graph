@@ -1,7 +1,7 @@
 
 import { isObject, upperFirst, isFunction, each } from '@cc/util'
 import { IContainer, IElement, IGroup, IShape } from '../interfaces'
-import { ElementFilterFn } from '../types'
+import { BBox, ElementFilterFn } from '../types'
 import { removeChild, setCanvas } from '../util'
 import Element from './element'
 
@@ -18,6 +18,22 @@ export default abstract class Container extends Element implements IContainer {
     const cfg = super.getDefaultCfg()
     cfg['children'] = []
     return cfg
+  }
+
+  // 根据子节点确定 BBox
+  getBBox(): BBox {
+    console.warn('暂不处理')
+    const box = {
+      x: 0,
+      y: 0,
+      minX: 0,
+      minY: 0,
+      maxX: 0,
+      maxY: 0,
+      width: 0,
+      height: 0
+    }
+    return box
   }
 
   addShape(...args: any[]): IShape {

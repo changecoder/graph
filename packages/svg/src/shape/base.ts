@@ -1,4 +1,4 @@
-import { AbstractShape, IShape, ShapeAttrs } from '@cc/base'
+import { AbstractShape, IShape, ShapeAttrs, BBox } from '@cc/base'
 import { SVG_ATTR_MAP } from '../constants'
 
 import Defs from '../defs'
@@ -30,6 +30,58 @@ export default class ShapeBase extends AbstractShape implements IShape {
 
   getGroupBase() {
     return Group
+  }
+
+  isStroke() {
+    const { stroke, strokeStyle } = this.attr()
+    return (stroke || strokeStyle) && this.canStroke
+  }
+
+  calculateBBox(): BBox {
+    const el = this.get('el')
+    const bbox = el?.getBBox()
+    if (bbox) {
+      const { x, y, width, height } = bbox
+      const lineWidth = this.getHitLineWidth()
+      const halfWidth = lineWidth / 2
+      const minX = x - halfWidth
+      const minY = y - halfWidth
+      const maxX = x + width + halfWidth
+      const maxY = y + height + halfWidth
+      return {
+        x: minX,
+        y: minY,
+        minX,
+        minY,
+        maxX,
+        maxY,
+        width: width + lineWidth,
+        height: height + lineWidth
+      }
+    }
+
+    return {
+      x: 0,
+      y: 0,
+      minX: 0,
+      minY: 0,
+      maxX: 0,
+      maxY: 0,
+      width: 0,
+      height: 0
+    }
+  }
+
+  /**
+   * 获取线拾取的宽度
+   * @returns {number} 线的拾取宽度
+   */
+  getHitLineWidth() {
+    const { lineWidth, lineAppendWidth } = this.attrs
+    if (this.isStroke()) {
+      return lineWidth + lineAppendWidth
+    }
+    return 0
   }
 
   draw(context: Defs, targetAttrs?: ShapeAttrs) {

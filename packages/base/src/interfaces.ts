@@ -8,6 +8,7 @@ import {
   Renderer,
   ElementFilterFn,
   Point,
+  BBox,
 } from './types'
 
 export interface ICtor<T> {
@@ -54,7 +55,7 @@ export interface IObservable {
  * @interface IBase
  * 所有图形类公共的接口，提供 get,set 方法
  */
- export interface IBase extends IObservable {
+export interface IBase extends IObservable {
   cfg: LooseObject
   /**
    * 获取属性值
@@ -85,7 +86,7 @@ export interface IObservable {
  * @interface
  * 图形元素的基类
  */
- export interface IElement extends IBase {
+export interface IElement extends IBase {
   /**
    * 获取父元素
    * @return {IContainer} 父元素一般是 Group 或者是 Canvas
@@ -161,7 +162,11 @@ export interface IObservable {
    * @param {object} attrs 图形属性配置项，键值对方式
    */
   attr(attrs: object): void
-
+  /**
+   * 获取包围盒，这个包围盒是相对于图形元素自己，不会计算 matrix
+   * @returns {BBox} 包围盒
+   */
+  getBBox(): BBox
   /**
    * 复制对象
    */
@@ -302,7 +307,7 @@ export interface IGroup extends IElement, IContainer {
  * @interface ICanvas
  * 画布，图形的容器
  */
- export interface ICanvas extends IContainer {
+export interface ICanvas extends IContainer {
   /**
    * 获取当前的渲染引擎
    * @return {Renderer} 返回当前的渲染引擎

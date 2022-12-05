@@ -1,6 +1,6 @@
 import { IGroup, Point } from '@cc/base'
 
-import { ComboConfig, EdgeConfig, Indexable, IShapeBase, Item, ItemType, ModelConfig, NodeConfig } from '../types'
+import { ComboConfig, EdgeConfig, Indexable, IShapeBase, Item, ItemType, ModelConfig, NodeConfig, UpdateType } from '../types'
 
 // item 的配置项
 export type IItemBaseConfig = Partial<{
@@ -42,6 +42,8 @@ export interface IItemBase {
   // 获取 Item 的ID
   getID: () => string
 
+  getShapeCfg: (model: ModelConfig, updateType?: UpdateType) => ModelConfig
+
   // 更新位置，避免整体重绘
   updatePosition: (cfg: Point) => boolean
 
@@ -67,10 +69,28 @@ export interface IItemBase {
 }
 
 export interface INode extends IItemBase {
+  // 获取从节点关联的所有边
+  getEdges: () => IEdge[]
+
+  // 获取引入节点的边
+  getInEdges: () => IEdge[]
+   
+  // 获取从节点引出的边
+  getOutEdges: () => IEdge[]
+
+  // 添加边
+  addEdge: (edge: IEdge) => void
+
+  // 移除边
+  removeEdge: (edge: IEdge) => void
 }
 
 export interface ICombo extends INode {
 }
 
 export interface IEdge extends IItemBase {
+  setSource: (source: INode) => void
+  setTarget: (target: INode) => void
+  getSource: () => INode
+  getTarget: () => INode
 }

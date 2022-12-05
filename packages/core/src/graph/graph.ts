@@ -241,7 +241,7 @@ export default abstract class AbstractGraph extends EventEmitter implements IAbs
     }
 
 
-    const { nodes = [] } = data
+    const { nodes = [], edges = [] } = data
 
     this.clear(true)
 
@@ -249,6 +249,10 @@ export default abstract class AbstractGraph extends EventEmitter implements IAbs
 
     this.addItems(
       nodes.map(node => ({ type: 'node', model: node }))
+    )
+
+    this.addItems(
+      edges.map(edge => ({ type: 'edge', model: edge }))
     )
 
     const success = () => {

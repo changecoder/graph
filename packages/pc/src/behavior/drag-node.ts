@@ -77,20 +77,22 @@ export default {
   // 更新节点
   update(item: INode, evt: ICCGGraphEvent) {
     const { point, origin } = this
-    const model: NodeConfig = item.get('model')
-    const nodeId: string = item.get('id')
-    if (!point[nodeId]) {
-      point[nodeId] = {
-        x: model.x || 0,
-        y: model.y || 0
+    if (origin) {
+      const model: NodeConfig = item.get('model')
+      const nodeId: string = item.get('id')
+      if (!point[nodeId]) {
+        point[nodeId] = {
+          x: model.x || 0,
+          y: model.y || 0
+        }
       }
+  
+      const x: number = evt.x - origin.x + point[nodeId].x
+      const y: number = evt.y - origin.y + point[nodeId].y
+  
+      const pos: Point = { x, y }
+      item.updatePosition(pos)
     }
-
-    const x: number = evt.x - origin.x + point[nodeId].x
-    const y: number = evt.y - origin.y + point[nodeId].y
-
-    const pos: Point = { x, y }
-    item.updatePosition(pos)
   },
 
   // 限流更新节点, 在当前情况下限流效果不理想

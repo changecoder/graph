@@ -29,6 +29,12 @@
         {
           id: 'node2'
         }
+      ],
+      edges: [
+        {
+          source: 'node1', // String，必须，起始点 id
+          target: 'node2', // String，必须，目标点 id
+        }
       ]
     }
     graph.data(data)

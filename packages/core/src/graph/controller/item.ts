@@ -2,8 +2,9 @@ import { IGroup } from '@cc/base'
 import { deepMix, each, isArray, isObject, isString, upperFirst, clone } from '@cc/util'
 import { CFG_PREFIX, ITEM_TYPE } from '../../constants'
 import { IAbstractGraph } from '../../interface'
-import { ComboConfig, ComboTree, Item, ItemType, ModelConfig } from '../../types'
+import { ComboConfig, ComboTree, EdgeConfig, Id, Item, ItemType, ModelConfig } from '../../types'
 import Node from '../../item/node'
+import Edge from '../../item/edge'
 
 export default class ItemController {
   private graph: IAbstractGraph
@@ -40,7 +41,32 @@ export default class ItemController {
 
     graph.emit('beforeadditem', { type, model })
 
-    if (type === ITEM_TYPE.NODE) {
+    if (type === ITEM_TYPE.EDGE) {
+      let source: Id
+      let target: Id
+      source = (model as EdgeConfig).source
+      target = (model as EdgeConfig).target
+
+      if (source && isString(source)) {
+        source = graph.findById(source)
+      }
+      if (target && isString(target)) {
+        target = graph.findById(target)
+      }
+
+      if (!source || !target) {
+        console.warn(`The source or target node of edge ${model.id} does not exist!`)
+        return
+      }
+
+      item = new Edge({
+        model,
+        source,
+        target,
+        linkCenter: graph.get('linkCenter'),
+        group: parent.addGroup()
+      })
+    } else if (type === ITEM_TYPE.NODE) {
       item = new Node({
         model,
         group: parent.addGroup()

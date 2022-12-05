@@ -1,5 +1,5 @@
 import GraphEvent from '../event/graph-event'
-import { ICanvas, IContainer, IElement, IGroup, IShape } from '../interfaces'
+import { ICanvas, IContainer, IShape } from '../interfaces'
 
 // 触发目标事件，目标只能是 shape 或 canvas
 export function emitTargetEvent(target: IShape | ICanvas, type: string, eventObj: GraphEvent) {

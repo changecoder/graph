@@ -2,12 +2,16 @@ const subjectColor = 'rgb(95, 149, 255)'
 
 const nodeMainFill = 'rgb(239, 244, 255)'
 
+const edgeMainStroke = 'rgb(224, 224, 224)'
+
 const activeFill = 'rgb(247, 250, 255)'
 
 const colorSet = {
   mainStroke: subjectColor,
   activeStroke: subjectColor,
   activeFill,
+
+  edgeMainStroke
 }
 
 export default {
@@ -33,4 +37,13 @@ export default {
       stroke: colorSet.activeStroke,
     },
   },
+  defaultEdge: {
+    type: 'line',
+    size: 1,
+    style: {
+      stroke: colorSet.edgeMainStroke,
+      lineAppendWidth: 2,
+    },
+    color: colorSet.edgeMainStroke,
+  }
 }

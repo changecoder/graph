@@ -1,10 +1,9 @@
 
 import { IShape } from '@cc/base'
 
-import { IEdge, INode, ICombo } from '../interface/item'
+import { INode } from '../interface/item'
 
-// Node Edge Combo 实例
-export type Item = INode | IEdge | ICombo
+
 
 export interface LayoutConfig {
   type?: string
@@ -55,13 +54,16 @@ export interface GraphOptions {
   linkCenter?: boolean
 }
 
-export type ItemType = 'item' | 'node' | 'edge' | 'combo'
-
 export interface IShapeBase extends IShape {
   isKeyShape: boolean
 }
 
-export interface ModelConfig {
+export type ModelStyle = Partial<{
+  [key: string]: unknown
+  style: ShapeStyle
+}>
+
+export interface ModelConfig extends ModelStyle {
   // 节点或边的类型
   type?: string
   label?: string
@@ -171,3 +173,4 @@ export interface Indexable<T> {
 
 export * from './event'
 export * from './behavior'
+export * from './item'

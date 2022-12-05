@@ -2,8 +2,10 @@ import { IGroup } from '@cc/base'
 import { isPlainObject, uniqueId, clone } from '@cc/util'
 
 import { IItemBase, IItemBaseConfig } from '../interface'
-import { ComboConfig, EdgeConfig, IShapeBase, ItemType, ModelConfig, NodeConfig } from '../types'
+import { ComboConfig, EdgeConfig, IBBox, IShapeBase, ItemType, ModelConfig, NodeConfig, UpdateType } from '../types'
 import Shape from '../element/shape'
+import { CACHE_BBOX } from '../constants'
+import { getBBox } from '../util/graphic'
 
 export default class ItemBase implements IItemBase {
   public _cfg: IItemBaseConfig & {
@@ -74,6 +76,23 @@ export default class ItemBase implements IItemBase {
   // 渲染后的逻辑，提供给子类复写
   protected afterDraw() { }
 
+  /**
+   * 根据 keyshape 计算包围盒
+   */
+  private calculateBBox(): IBBox {
+    const keyShape: IShapeBase = this.get('keyShape')
+    const group: IGroup = this.get('group')
+    // 因为 group 可能会移动，所以必须通过父元素计算才能计算出正确的包围盒
+    const bbox = getBBox(keyShape, group)
+    bbox.x = bbox.minX
+    bbox.y = bbox.minY
+    bbox.width = bbox.maxX - bbox.minX
+    bbox.height = bbox.maxY - bbox.minY
+    bbox.centerX = (bbox.minX + bbox.maxX) / 2
+    bbox.centerY = (bbox.minY + bbox.maxY) / 2
+    return bbox
+  }
+    
   public draw() {
     this.beforeDraw()
     this.drawInner()
@@ -93,7 +112,7 @@ export default class ItemBase implements IItemBase {
       return
     }
     this.updatePosition(model)
-    const cfg = clone(model) as ModelConfig // 可能会附加额外信息
+    const cfg = this.getShapeCfg(model) as ModelConfig // 可能会附加额外信息
     const shapeType = cfg.type as string
 
     const keyShape: IShapeBase = shapeFactory.draw(shapeType, cfg, group)
@@ -128,6 +147,27 @@ export default class ItemBase implements IItemBase {
     return this.get('id')
   }
 
+  public getShapeCfg(model: ModelConfig, updateType?: UpdateType): ModelConfig {
+    const styles = this.get('styles')
+    if (styles) {
+      // merge graph的item样式与数据模型中的样式
+      const newModel = model
+      newModel.style = { ...styles, ...(model.style || {}) }
+      return newModel
+    }
+    return model
+  }
+
+  public getBBox(): IBBox {
+    // 计算 bbox 开销有些大，缓存
+    let bbox: IBBox = this.get(CACHE_BBOX)
+    if (!bbox) {
+      bbox = this.calculateBBox()
+      this.set(CACHE_BBOX, bbox)
+    }
+    return bbox
+  }
+  
   /**
    * 更新位置，避免整体重绘
    * @param {object} cfg 待更新数据
@@ -157,7 +197,7 @@ export default class ItemBase implements IItemBase {
 
     return true
   }
-
+  
   /**
    * 显示元素
    */

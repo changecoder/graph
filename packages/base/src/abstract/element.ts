@@ -2,7 +2,7 @@ import { mix, isObject, each, isArray } from '@cc/util'
 
 import Base from './base'
 import { ICanvas, ICtor, IElement, IGroup } from '../interfaces'
-import { ChangeType, ShapeAttrs, ShapeBase, LooseObject} from '../types'
+import { ChangeType, ShapeAttrs, ShapeBase, LooseObject, BBox} from '../types'
 import { removeFromArray } from '../util'
 import GraphEvent from '../event/graph-event'
 import { DELEGATION_SPLIT, MATRIX, WILDCARD } from '../constants'
@@ -107,6 +107,9 @@ export default abstract class Element extends Base implements IElement {
     }
     return this.attrs[name]
   }
+
+  // 在子类上单独实现
+  abstract getBBox(): BBox
 
   /**
    * 内部设置属性值的接口
