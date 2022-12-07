@@ -37,6 +37,14 @@ export const getBBox = (element: IShapeBase, group: IGroup): IBBox => {
   }
 }
 
+
+/**
+ * 向量解法(后续加入)
+ * 目标点减去圆心得到的向量方向就是从圆心指向目标点
+ * 将这个向量长度限制为半径（方法很多，比如说转为极坐标）
+ * 根据首尾相加的原则，圆心加上此向量就是圆周上的一点了。
+ */
+// 计算圆形从中心点到指定位置半径的坐标
 export const getCircleIntersectByPoint = (circle: ICircle, point: Point): Point | null => {
   const { x: cx, y: cy, r } = circle
   const { x, y } = point
@@ -46,7 +54,7 @@ export const getCircleIntersectByPoint = (circle: ICircle, point: Point): Point 
   if (dx * dx + dy * dy < r * r) {
     return null
   }
-  const angle = Math.atan(dy / dx)
+  const angle = Math.atan2(dy, dx)
   return {
     x: cx + Math.abs(r * Math.cos(angle)) * Math.sign(dx),
     y: cy + Math.abs(r * Math.sin(angle)) * Math.sign(dy)

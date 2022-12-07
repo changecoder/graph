@@ -174,6 +174,8 @@ export default class ItemBase implements IItemBase {
     this.updatePosition(model)
     // 更新元素内容，样式
     this.updateShape(updateType)
+    // 清除缓存
+    this.clearCache()
   }
 
   /**
@@ -221,7 +223,7 @@ export default class ItemBase implements IItemBase {
     }
 
     group.translate(x, y)
-
+    this.clearCache() // 位置更新后需要清除缓存
     return true
   }
   
@@ -259,6 +261,13 @@ export default class ItemBase implements IItemBase {
    */
   public isVisible(): boolean {
     return this.get('visible')
+  }
+
+  /**
+   * 更新/刷新等操作后，清除 cache
+   */
+  protected clearCache() {
+    this.set(CACHE_BBOX, null)
   }
 
   public destroy() {

@@ -13,9 +13,9 @@
   ],
   "scripts": {
     "build": "npm run clean && run-p build:*",
-    "build:esm": "tsc -p tsconfig.json --target ES5 --module ESNext --outDir esm",
-    "build:cjs": "tsc -p tsconfig.json --target ES5 --module commonjs --outDir lib",
-    "clean": "rm -rf lib && rm -rf esm"
+    "build:esm": "tsc -p tsconfig.json -t ES6 -m ESNext --outDir esm",
+    "build:cjs": "tsc -p tsconfig.json -t ES5 -m commonjs --outDir lib",
+    "clean": "rimraf es esm lib dist"
   },
   "license": "MIT",
   "devDependencies": {

@@ -17,3 +17,4 @@ export const POINT_NAME_SUFFIX = 'Point' // 起点或者结束点的后缀，如
 export const ANCHOR_NAME_SUFFIX = 'Anchor'
 
 export const CACHE_BBOX = 'bboxCache'
+export const CACHE_ANCHOR_POINTS = 'anchorPointsCache'
