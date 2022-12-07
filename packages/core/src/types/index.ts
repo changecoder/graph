@@ -171,6 +171,8 @@ export interface Indexable<T> {
   [key: string]: T
 }
 
+export type Matrix = number[]
+
 export * from './event'
 export * from './behavior'
 export * from './item'

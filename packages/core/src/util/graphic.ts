@@ -1,5 +1,6 @@
 import { IGroup, Point } from '@cc/base'
 import { IShapeBase, IBBox, IPoint, ICircle } from '../types'
+import { applyMatrix } from './math'
 
 export const getBBox = (element: IShapeBase, group: IGroup): IBBox => {
   const bbox = element.getBBox()
@@ -13,7 +14,12 @@ export const getBBox = (element: IShapeBase, group: IGroup): IBBox => {
   }
   // 根据父元素变换矩阵
   if (group) {
-    console.log('暂不处理')
+    let matrix = group.getMatrix()
+    if (!matrix) {
+      matrix = [1, 0, 0, 0, 1, 0, 0, 0, 1]
+    }
+    leftTop = applyMatrix(leftTop, matrix)
+    rightBottom = applyMatrix(rightBottom, matrix)
   }
 
   const { x: lx, y: ly } = leftTop

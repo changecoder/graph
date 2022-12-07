@@ -71,6 +71,11 @@ export default abstract class Element extends Base implements IElement {
     return false
   }
 
+  resetMatrix() {
+    this.attr(MATRIX, this.getDefaultMatrix())
+    this.onCanvasChange('matrix')
+  }
+
   getMatrix(): number[] {
     return this.attr(MATRIX)
   }
