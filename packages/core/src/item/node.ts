@@ -60,35 +60,43 @@ export default class Node extends Item implements INode {
    */
   public getLinkPoint(point: IPoint): IPoint | null {
     const keyShape: IShapeBase = this.get('keyShape')
-    const type: string = keyShape.get('type')
-    const itemType: string = this.get('type')
-    let centerX: number | undefined
-    let centerY: number | undefined
-    const bbox = this.getBBox()
-    if (itemType === 'combo') {
-      console.log('combo暂不实现')
-    } else {
-      centerX = bbox.centerX
-      centerY = bbox.centerY
+    // const type: string = keyShape.get('type')
+    // const itemType: string = this.get('type')
+    // let centerX: number | undefined
+    // let centerY: number | undefined
+    // const bbox = this.getBBox()
+    // if (itemType === 'combo') {
+    //   console.log('combo暂不实现')
+    // } else {
+    //   centerX = bbox.centerX
+    //   centerY = bbox.centerY
+    // }
+    // let intersectPoint: IPoint | null
+    // switch (type) {
+    //   case 'circle':
+    //     intersectPoint = getCircleIntersectByPoint(
+    //       {
+    //         x: centerX!,
+    //         y: centerY!,
+    //         r: bbox.width / 2
+    //       },
+    //       point
+    //     )
+    //     break
+    //   default:
+    //     console.log('只实现circle')
+    //     break
+    // }
+    // // 暂直接返回中心点
+    // const linkPoint = { x: centerX, y: centerY } as IPoint
+    const el = keyShape.get('el')
+    const bbox = el.getBBox()
+    const centerX = bbox.x
+    const centerY = bbox.y 
+    const linkPoint = {
+      x: centerX + point.x + bbox.width / 2,
+      y: centerY + point.y + bbox.height / 2,
     }
-    let intersectPoint: IPoint | null
-    switch (type) {
-      case 'circle':
-        intersectPoint = getCircleIntersectByPoint(
-          {
-            x: centerX!,
-            y: centerY!,
-            r: bbox.width / 2
-          },
-          point
-        )
-        break
-      default:
-        console.log('只实现circle')
-        break
-    }
-    // 暂直接返回中心点
-    const linkPoint = { x: centerX, y: centerY } as IPoint
     return linkPoint
   }
 }
