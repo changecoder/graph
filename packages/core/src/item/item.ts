@@ -178,6 +178,19 @@ export default class ItemBase implements IItemBase {
     this.clearCache()
   }
 
+  public getUpdateType(cfg?: ModelConfig): UpdateType {
+    return undefined
+  }
+
+  // 将更新应用到 model 上，刷新属性
+  public update(cfg: ModelConfig, updateType: UpdateType = undefined) {
+    const model: ModelConfig = this.get('model')
+    // 仅仅移动位置时，既不更新，也不重绘
+    if (updateType === 'move') {
+      this.updatePosition(cfg)
+    }
+  }
+
   /**
    * 更新元素内容，样式
    */

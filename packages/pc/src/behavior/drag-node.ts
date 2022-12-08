@@ -9,7 +9,7 @@ interface IBehaviorEvent {
   origin: IPoint
 }
 
-export default {
+const dragNode: any = {
   targets: [] as INode[],
 
   point: {} as LooseObject,
@@ -20,6 +20,7 @@ export default {
 
   getDefaultCfg(): object {
     return {
+      updateEdge: true,
       enableDebounce: false
     }
   },
@@ -58,7 +59,7 @@ export default {
         evt,
       })
     } else {
-      this.targets.map(target => {
+      this.targets.map((target: INode) => {
         this.update(target, evt)
       })
     }
@@ -91,7 +92,11 @@ export default {
       const y: number = evt.y - origin.y + point[nodeId].y
   
       const pos: Point = { x, y }
-      item.updatePosition(pos)
+      if (this.get('updateEdge')) {
+        this.graph.updateItem(item, pos, false)
+      } else {
+        item.updatePosition(pos)
+      }
     }
   },
 
@@ -118,3 +123,5 @@ export default {
     }, 50, true
   )
 }
+
+export default dragNode

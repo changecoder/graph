@@ -1,5 +1,5 @@
 import { EventEmitter, ICanvas, IGroup, LooseObject } from '@cc/base'
-import { deepMix, each, isPlainObject } from '@cc/util'
+import { deepMix, each, isPlainObject, isString } from '@cc/util'
 
 import { IAbstractGraph } from '../interface/graph'
 import { 
@@ -320,6 +320,20 @@ export default abstract class AbstractGraph extends EventEmitter implements IAbs
 
     this.emit('aftergraphrefreshposition')
     this.autoPaint()
+  }
+
+  public updateItem(
+    item: Item | string,
+    cfg: Partial<NodeConfig> | EdgeConfig
+  ): void {
+    const itemController: ItemController = this.get('itemController')
+    let currentItem: Item
+    if (isString(item)) {
+      currentItem = this.findById(item as string)
+    } else {
+      currentItem = item
+    }
+    itemController.updateItem(currentItem, cfg)
   }
 
   public getNodes(): INode[] {

@@ -83,16 +83,21 @@ const singleEdge: ShapeOptions = {
       routeCfg = { source, target, offset: previousStyle.offset, radius: previousStyle.radius }
     }
     const path = (this as any).getPath(points, routeCfg)
-    const style = { ...cfg.style }
-    if (style.lineWidth === undefined) {
-      style.lineWdith = (isNumber(size) ? size : (size as number[])?.[0]) || currentAttr.lineWidth
+    let style: any = {}
+    if (updateType === 'move') {
+      style = { path }
+    } else {
+      style = { ...cfg.style }
+      if (style.lineWidth === undefined) {
+        style.lineWdith = (isNumber(size) ? size : (size as number[])?.[0]) || currentAttr.lineWidth
+      }
+      if (style.path === undefined) {
+        style.path = path
+      }
+      if (style.stroke === undefined) {
+        style.stroke = currentAttr.stroke || cfg.color
+      } 
     }
-    if (style.path === undefined) {
-      style.path = path
-    }
-    if (style.stroke === undefined) {
-      style.stroke = currentAttr.stroke || cfg.color
-    } 
     if (shape) {
       shape.attr(style)
     }

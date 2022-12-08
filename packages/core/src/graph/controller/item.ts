@@ -1,8 +1,8 @@
 import { IGroup } from '@cc/base'
-import { deepMix, each, isArray, isObject, isString, upperFirst, clone } from '@cc/util'
-import { CFG_PREFIX, ITEM_TYPE } from '../../constants'
-import { IAbstractGraph } from '../../interface'
-import { ComboConfig, ComboTree, EdgeConfig, Id, Item, ItemType, ModelConfig } from '../../types'
+import { deepMix, each, isArray, isObject, isString, upperFirst, clone, throttle } from '@cc/util'
+import { CFG_PREFIX, ITEM_TYPE, MAPPER_SUFFIX } from '../../constants'
+import { IAbstractGraph, IEdge, INode } from '../../interface'
+import { ComboConfig, ComboTree, EdgeConfig, Id, Item, ItemType, ModelConfig, NodeConfig, UpdateType } from '../../types'
 import Node from '../../item/node'
 import Edge from '../../item/edge'
 
@@ -10,6 +10,49 @@ export default class ItemController {
   private graph: IAbstractGraph
 
   public destroyed: boolean
+
+  private edgeToBeUpdateMap: {
+    [key: string]: {
+      edge: IEdge,
+      updateType: UpdateType
+    }
+  } = {}
+
+  /**
+   * 更新边限流，同时可以防止相同的边频繁重复更新
+   * */
+  private throttleRefresh = throttle(
+    () => {
+      const { graph } = this
+      if (!graph || graph.get('destroyed')) {
+        return
+      }
+      const edgeToBeUpdateMap = this.edgeToBeUpdateMap
+      if (!edgeToBeUpdateMap) {
+        return
+      }
+      const edgeValues = Object.values(edgeToBeUpdateMap)
+      if (!edgeValues.length) {
+        return
+      }
+      edgeValues.forEach(obj => {
+        const edge = obj.edge
+        if (!edge || edge.destroyed) return
+        const source = edge.getSource()
+        const target = edge.getTarget()
+        if (!source || source.destroyed || !target || target.destroyed) {
+          return
+        }
+        edge.refresh(obj.updateType)
+      })
+      this.edgeToBeUpdateMap = {}
+    },
+    16,
+    {
+      trailing: true,
+      leading: true,
+    }
+  )
 
   constructor(graph: IAbstractGraph) {
     this.graph = graph
@@ -78,6 +121,78 @@ export default class ItemController {
       graph.get('itemMap')[item.get('id')] = item
       graph.emit('afteradditem', { item, model })
       return item as T
+    }
+  }
+
+  // 更新节点和边
+  public updateItem(
+    item: Item | string,
+    cfg: EdgeConfig | Partial<NodeConfig>
+  ) {
+    const { graph } = this
+
+    if (isString(item)) {
+      item = graph.findById(item) as Item
+    }
+
+    if (!item || item.destroyed) {
+      return
+    }
+
+    // 更新的 item 的类型
+    let type = ''
+    if (item.getType) {
+      type = item.getType()
+    }
+
+    const mapper = graph.get(type + MAPPER_SUFFIX)
+    const model = item.getModel()
+
+    const updateType = item.getUpdateType(cfg)
+
+    if (mapper) {
+      console.log('等待开发')
+    } else {
+      each(cfg, (val, key) => {
+        if (model[key]) {
+          if (isObject(val) && !isArray(val)) {
+            cfg[key] = { ...(model[key] as Object), ...(cfg[key] as Object) }
+          }
+        }
+      })
+    }
+
+    graph.emit('beforeupdateitem', { item, cfg })
+
+    if (type === ITEM_TYPE.EDGE) {
+      // 若是边要更新source || target, 为了不影响示例内部model，并且重新计算startPoint和endPoint，手动设置
+      if (cfg.source) {
+        let source: INode = cfg.source as INode
+        if (isString(source)) {
+          source = graph.findById(source) as INode
+        }
+        (item as IEdge).setSource(source)
+      }
+      if (cfg.target) {
+        let target: INode = cfg.target as INode
+        if (isString(target)) {
+          target = graph.findById(target) as INode
+        }
+        (item as IEdge).setTarget(target)
+      }
+      item.update(cfg)
+    } else if (type === ITEM_TYPE.NODE) {
+      item.update(cfg, updateType)
+      const edges: IEdge[] = (item as INode).getEdges()
+      if (updateType === 'move') {
+        each(edges, (edge: IEdge) => {
+          this.edgeToBeUpdateMap[edge.getID()] = {
+            edge: edge,
+            updateType
+          }
+          this.throttleRefresh()
+        })
+      }
     }
   }
 

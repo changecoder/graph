@@ -173,6 +173,14 @@ export default class Edge extends Item implements IEdge {
     return false
   }
 
+  /**
+   * 边不需要重计算容器位置，直接重新计算 path 位置
+   * @param {object} cfg 待更新数据
+   */
+  public update(cfg: EdgeConfig, updateType: UpdateType = undefined) {
+    console.log('------edge cfg-------', cfg)
+  }
+
   public destroy() {
     const sourceItem: INode = this.get(`source${ITEM_NAME_SUFFIX}`)
     const targetItem: INode = this.get(`target${ITEM_NAME_SUFFIX}`)

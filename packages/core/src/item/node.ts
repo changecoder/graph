@@ -1,6 +1,7 @@
+import { isNil } from '@cc/util'
 import { CACHE_ANCHOR_POINTS } from '../constants'
 import { IEdge, INode } from '../interface'
-import { IPoint, IShapeBase } from '../types'
+import { IPoint, IShapeBase, ModelConfig, UpdateType } from '../types'
 import { getCircleIntersectByPoint } from '../util/graphic'
 import Item from './item'
 
@@ -111,5 +112,29 @@ export default class Node extends Item implements INode {
       linkPoint = { x: centerX, y: centerY } as IPoint
     }
     return linkPoint
+  }
+
+  /**
+   * 判断更新的种类，move 表示仅移动，bbox 表示大小有变化，style 表示仅与大小无关的参数变化
+   * @param cfg 节点数据模型
+   */
+  public getUpdateType(cfg?: ModelConfig): UpdateType {
+    if (!cfg) {
+      return undefined
+    }
+
+    const existX = !isNil(cfg.x)
+    const existY = !isNil(cfg.y)
+
+    const keys = Object.keys(cfg)
+
+    // 仅有一个字段，包含 x 或者 包含 y
+    // 两个字段，同时有 x，同时有 y
+    if (
+      (keys.length === 1 && (existX || existY)) ||
+      (keys.length === 2 && existX && existY)
+    ) {
+      return 'move'
+    }
   }
 }

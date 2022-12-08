@@ -1,9 +1,10 @@
-import { AbstractShape, IShape, ShapeAttrs, BBox } from '@cc/base'
+import { AbstractShape, IShape, ShapeAttrs, BBox, ChangeType } from '@cc/base'
 import { SVG_ATTR_MAP } from '../constants'
 
 import Defs from '../defs'
 import Group from '../group'
 import { createDom } from '../util/dom'
+import { refreshElement } from '../util/draw'
 import { setTransform } from '../util/svg'
 import * as Shape from './index'
 
@@ -37,6 +38,25 @@ export default class ShapeBase extends AbstractShape implements IShape {
     return (stroke || strokeStyle) && this.canStroke
   }
 
+  // 覆盖基类的 afterAttrsChange 方法
+  afterAttrsChange(targetAttrs: ShapeAttrs) {
+    super.afterAttrsChange(targetAttrs)
+    const canvas = this.get('canvas')
+    // 只有挂载到画布下，才对元素进行实际渲染
+    if (canvas && canvas.get('autoDraw')) {
+      const context = canvas.get('context')
+      this.draw(context, targetAttrs)
+    }
+  }
+
+  /**
+   * 一些方法调用会引起画布变化
+   * @param {ChangeType} changeType 改变的类型
+   */
+  onCanvasChange(changeType: ChangeType) {
+    refreshElement(this, changeType)
+  }
+    
   calculateBBox(): BBox {
     const el = this.get('el')
     const bbox = el?.getBBox()

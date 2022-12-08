@@ -20,7 +20,12 @@ export function refreshElement(element: IElement, changeType: ChangeType) {
   // 只有挂载到画布下，才对元素进行实际渲染
   if (canvas && canvas.get('autoDraw')) {
     const context = canvas.get('context')
-    if (changeType === 'matrix') {
+    const el = element.get('el')
+    if (changeType === 'remove') {
+      if (el && el.parentNode) {
+        el.parentNode.removeChild(el)
+      }
+    } else if (changeType === 'matrix') {
       setTransform(element)
     } else if (changeType === 'add') {
       element.draw(context)

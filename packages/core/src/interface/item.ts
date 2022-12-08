@@ -68,6 +68,11 @@ export interface IItemBase {
    */
   refresh: (updateType?: UpdateType) => void
 
+  getUpdateType: (cfg?: ModelConfig) => UpdateType
+  
+  // 将更新应用到 model 上，刷新属性
+  update: (cfg: ModelConfig, updateType?: UpdateType) => void
+
   // 是否可见
   isVisible: () => boolean
 

@@ -19,4 +19,5 @@ export { default as uniqueId } from './unique-id'
 export { default as clone } from './clone'
 export { default as wrapBehavior } from './wrap-behavior'
 export { default as debounce } from './debounce'
+export { default as throttle } from './throttle'
 
