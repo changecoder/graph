@@ -1,10 +1,11 @@
 import { IGroup, IShape } from '@cc/base'
+import { deepMix } from '@cc/util'
 
 import { ShapeOptions } from '../../interface'
 import { NodeConfig, ShapeStyle } from '../../types'
 import Shape from '../shape'
 import Global from '../../global'
-import { deepMix } from '@cc/util'
+
 
 Shape.registerNode(
   'simple-circle',
