@@ -18,6 +18,12 @@
     "@typescript-eslint/camelcase": 0,
     "no-unused-vars": 0, // @typescript-eslint/no-unused-vars
     "@typescript-eslint/no-use-before-define": [2, { "functions": false }],
-    "no-useless-escape": 1
+    "no-useless-escape": 1,
+    "curly": ["error", "all"],
+    "indent": ["error", 2],
+    "camelcase": "error",
+    "eqeqeq":"error", // 要求使用 === 和 !==
+    "no-constant-condition":"error", // 禁止在条件中使用常量表达式 
+    "no-empty":"error" // 禁止出现空语句块
   }
 }

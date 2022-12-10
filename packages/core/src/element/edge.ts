@@ -1,5 +1,5 @@
 import { IGroup, IShape, LooseObject, Point } from '@cc/base'
-import { mix, isNumber } from '@cc/util'
+import { mix, isNumber, isArray } from '@cc/util'
 
 import { ShapeOptions } from '../interface'
 import Global from '../global'
@@ -9,6 +9,7 @@ import { EdgeConfig, IPoint, Item, ModelConfig, ShapeStyle, UpdateType } from '.
 import { CLS_SHAPE } from '../constants'
 import { shapeBase } from './shapeBase'
 import Shape from './shape'
+import { getControlPoint } from '../util/graphic'
 
 
 const singleEdge: ShapeOptions = {
@@ -34,11 +35,11 @@ const singleEdge: ShapeOptions = {
   getPath(points: Point[]): Array<Array<string | number>> {
     const path: Array<Array<string | number>> = []
     each(points, (point: Point, index: number) => {
-      if (index === 0) {
-        path.push(['M', point.x, point.y])
-      } else {
-        path.push(['L', point.x, point.y])
-      }
+      if (index === 0) 
+      {path.push(['M', point.x, point.y])}
+      else 
+      {path.push(['L', point.x, point.y])}
+      
     })
     return path
   },
@@ -65,42 +66,42 @@ const singleEdge: ShapeOptions = {
     const controlPoints = this.getControlPoints!(cfg)
     let points = [startPoint] // 添加起始点
     // 添加控制点
-    if (controlPoints) {
-      points = points.concat(controlPoints)
-    }
+    if (controlPoints) 
+    {points = points.concat(controlPoints)}
+    
     // 添加结束点
     points.push(endPoint)
 
     const currentAttr = shape.attr()
     const previousStyle = cfg.style || {}
-    if (previousStyle.stroke === undefined) {
-      previousStyle.stroke = cfg.color
-    }
+    if (previousStyle.stroke === undefined) 
+    {previousStyle.stroke = cfg.color}
+    
     const source = cfg.sourceNode
     const target = cfg.targetNode
     let routeCfg: { [key: string]: unknown } = { radius: previousStyle.radius }
-    if (!controlPoints) {
-      routeCfg = { source, target, offset: previousStyle.offset, radius: previousStyle.radius }
-    }
+    if (!controlPoints) 
+    {routeCfg = { source, target, offset: previousStyle.offset, radius: previousStyle.radius }}
+    
     const path = (this as any).getPath(points, routeCfg)
     let style: any = {}
     if (updateType === 'move') {
       style = { path }
     } else {
       style = { ...cfg.style }
-      if (style.lineWidth === undefined) {
-        style.lineWdith = (isNumber(size) ? size : (size as number[])?.[0]) || currentAttr.lineWidth
-      }
-      if (style.path === undefined) {
-        style.path = path
-      }
-      if (style.stroke === undefined) {
-        style.stroke = currentAttr.stroke || cfg.color
-      } 
+      if (style.lineWidth === undefined) 
+      {style.lineWdith = (isNumber(size) ? size : (size as number[])?.[0]) || currentAttr.lineWidth}
+      
+      if (style.path === undefined) 
+      {style.path = path}
+      
+      if (style.stroke === undefined) 
+      {style.stroke = currentAttr.stroke || cfg.color}
+       
     }
-    if (shape) {
-      shape.attr(style)
-    }
+    if (shape) 
+    {shape.attr(style)}
+    
   },
 
   getShapeStyle(cfg: EdgeConfig): ShapeStyle {
@@ -115,9 +116,9 @@ const singleEdge: ShapeOptions = {
     const controlPoints = this.getControlPoints!(cfg)
     let points = [startPoint] // 添加起始点
     // 添加控制点
-    if (controlPoints) {
-      points = points.concat(controlPoints)
-    }
+    if (controlPoints) 
+    {points = points.concat(controlPoints)}
+    
     // 添加结束点
     points.push(endPoint)
     const path = (this as any).getPath(points)
@@ -166,4 +167,151 @@ Shape.registerEdge(
     },
   },
   'single-edge'
+)
+// 二次贝塞尔曲线
+Shape.registerEdge(
+  'quadratic',
+  {
+    curvePosition: 0.5, // 弯曲的默认位置
+    curveOffset: -20, // 弯曲度，沿着 startPoint, endPoint 的垂直向量（顺时针）方向，距离线的距离，距离越大越弯曲
+    getControlPoints(cfg: EdgeConfig): IPoint[] {
+      let { controlPoints } = cfg // 指定controlPoints
+      if (!controlPoints || !controlPoints.length) {
+        const { startPoint, endPoint } = cfg
+        if (cfg.curveOffset === undefined) 
+        {cfg.curveOffset = this.curveOffset}
+        
+        if (cfg.curvePosition === undefined) {
+          cfg.curvePosition = this.curvePosition
+        }
+        if (isArray(this.curveOffset)) {
+          cfg.curveOffset = (cfg.curveOffset as Array<number>)[0]
+        }
+        if (isArray(this.curvePosition)) {
+          cfg.curvePosition = (cfg.curveOffset as Array<number>)[0]
+        }
+        const innerPoint = getControlPoint(
+          startPoint as Point,
+          endPoint as Point,
+          cfg.curvePosition as number,
+          cfg.curveOffset as number,
+        )
+        controlPoints = [innerPoint]
+      }
+      return controlPoints
+    },
+    getPath(points: Point[]): Array<Array<string | number>> {
+      const path = []
+      path.push(['M', points[0].x, points[0].y])
+      path.push(['Q', points[1].x, points[1].y, points[2].x, points[2].y])
+      return path
+    },
+  },
+  'single-edge'
+)
+
+// 三阶贝塞尔曲线
+Shape.registerEdge(
+  'cubic',
+  {
+    curvePosition: [1 / 2, 1 / 2],
+    curveOffset: [-20, 20],
+    getControlPoints(cfg: EdgeConfig): IPoint[] {
+      let { controlPoints } = cfg // 指定 controlPoints
+      if (cfg.curveOffset === undefined) {
+        cfg.curveOffset = this.curveOffset
+      }
+      if (cfg.curvePosition === undefined) {
+        cfg.curvePosition = this.curvePosition
+      }
+      if (isNumber(cfg.curveOffset)) {
+        cfg.curveOffset = [cfg.curveOffset, -cfg.curveOffset]
+      }
+      if (isNumber(cfg.curvePosition)) {
+        cfg.curvePosition = [cfg.curvePosition, 1 - cfg.curvePosition]
+      }
+      if (!controlPoints || !controlPoints.length || controlPoints.length < 2) {
+        const { startPoint, endPoint } = cfg
+        const innerPoint1 = getControlPoint(
+          startPoint as Point,
+          endPoint as Point,
+          (cfg.curvePosition as Array<number>)[0],
+          (cfg.curveOffset as Array<number>)[0],
+        )
+        const innerPoint2 = getControlPoint(
+          startPoint as Point,
+          endPoint as Point,
+          (cfg.curvePosition as Array<number>)[1],
+          (cfg.curveOffset  as Array<number>)[1],
+        )
+        controlPoints = [innerPoint1, innerPoint2]
+      }
+      return controlPoints
+    },
+    getPath(points: Point[]): Array<Array<string | number>> {
+      const path = []
+      path.push(['M', points[0].x, points[0].y])
+      path.push([
+        'C',
+        points[1].x,
+        points[1].y,
+        points[2].x,
+        points[2].y,
+        points[3].x,
+        points[3].y,
+      ])
+      return path
+    },
+  },
+  'single-edge'
+)
+
+// 水平方向的三阶贝塞尔曲线
+Shape.registerEdge(
+  'cubic-horizontal',
+  {
+    curvePosition: [1 / 2, 1 / 2],
+    minCurveOffset: [0, 0],
+    curveOffset: undefined,
+    getControlPoints(cfg: EdgeConfig): IPoint[] {
+      const { startPoint, endPoint } = cfg
+      if (cfg.curvePosition === undefined) {
+        cfg.curvePosition = this.curvePosition
+      }
+      if (cfg.curveOffset === undefined) {
+        cfg.curveOffset = this.curveOffset
+      }
+      if (cfg.minCurveOffset === undefined) {
+        cfg.minCurveOffset = this.minCurveOffset
+      }
+      if (isNumber(cfg.curveOffset)) {
+        cfg.curveOffset = [cfg.curveOffset, -cfg.curveOffset]
+      }
+      if (isNumber(cfg.minCurveOffset)){
+        cfg.minCurveOffset = [cfg.minCurveOffset, -cfg.minCurveOffset]
+      }
+      if (isNumber(cfg.curvePosition)){
+        cfg.curvePosition = [cfg.curvePosition, 1 - cfg.curvePosition]
+      }
+      const xDist = endPoint!.x - startPoint!.x
+      let curveOffset: number[] = [0, 0]
+      if (cfg.curveOffset) {
+        curveOffset = cfg.curveOffset
+      } else if (Math.abs(xDist) < Math.abs((cfg.minCurveOffset as Array<number>)[0])) {
+        curveOffset = cfg.minCurveOffset as Array<number>
+      }
+
+      const innerPoint1 = {
+        x: startPoint!.x + xDist * (this as any).curvePosition[0] + curveOffset[0],
+        y: startPoint!.y
+      }
+      const innerPoint2 = {
+        x: endPoint!.x - xDist * (this as any).curvePosition[1] + curveOffset[1],
+        y: endPoint!.y
+      }
+      const controlPoints = [innerPoint1, innerPoint2]
+      return controlPoints
+    },
+  },
+  'cubic'
 )

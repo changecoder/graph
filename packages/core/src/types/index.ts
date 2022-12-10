@@ -112,7 +112,9 @@ export interface EdgeConfig extends ModelConfig {
   targetNode?: Node
   startPoint?: IPoint
   endPoint?: IPoint
-  controlPoints?: IPoint[]
+  controlPoints?: IPoint[],
+  curveOffset?: number | Array<number>,
+  minCurveOffset?: number | Array<number>
 }
 
 export interface IPoint {

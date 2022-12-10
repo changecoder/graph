@@ -1,4 +1,6 @@
 import { IGroup, Point } from '@cc/base'
+import { vec2 } from '@cc/util'
+
 import { IShapeBase, IBBox, IPoint, ICircle } from '../types'
 import { applyMatrix } from './math'
 
@@ -59,4 +61,36 @@ export const getCircleIntersectByPoint = (circle: ICircle, point: Point): Point 
     x: cx + Math.abs(r * Math.cos(angle)) * Math.sign(dx),
     y: cy + Math.abs(r * Math.sin(angle)) * Math.sign(dy)
   }
+}
+
+/**
+ * 根据起始点，相对位置，偏移量计算控制点
+ * @param startPoint 起始点， 包含 x, y
+ * @param endPoint 结束点 包含 x, y
+ * @param percent 相对位置 范围 0-1
+ * @param offset 偏移量
+ * @returns 控制点， 包含x, y
+ */
+export const getControlPoint = (
+  startPoint: IPoint,
+  endPoint: IPoint,
+  percent: number = 0,
+  offset: number = 0
+): IPoint => {
+  const point: IPoint = {
+    x: (1 - percent) * startPoint.x + percent * endPoint.x,
+    y: (1 - percent) * startPoint.y + percent * endPoint.y
+  }
+  let tangent = [0, 0]
+  vec2.normalize(tangent, [endPoint.x - startPoint.x, endPoint.y - startPoint.y])
+
+  if (!tangent || (!tangent[0] && !tangent[1])) {
+    tangent = [0, 0]
+  }
+
+  const perpendicular = [-tangent[1] * offset, tangent[0] * offset] // 垂直向量
+  point.x += perpendicular[0]
+  point.y += perpendicular[1]
+
+  return point
 }
