@@ -1,7 +1,7 @@
 import { IGroup, IShape } from '@cc/base'
 import { isFunction, isString, upperFirst } from '@cc/util'
 import { ShapeOptions } from '../interface'
-import { IPoint, Item, ModelConfig, UpdateType } from '../types'
+import { EdgeConfig, IPoint, Item, ModelConfig, NodeConfig, UpdateType } from '../types'
 
 /**
  * 工厂方法的基类
@@ -21,6 +21,17 @@ export const ShapeFactoryBase = {
     return shape.getControlPoints!(cfg)
   },
 
+  /**
+   * 获取控制点
+   * @param {String} type 节点、边类型
+   * @param  {Object} cfg 节点、边的配置项
+   * @return {Array|null} 控制点的数组,如果为 null，则没有控制点
+   */
+  getAnchorPoints(type: string, cfg: ModelConfig): number[][] | undefined {
+    const shape = this.getShape(type)
+    return shape.getAnchorPoints!(cfg)
+  },
+    
   /**
    * 是否允许更新，不重新绘制图形
    * @param  {String} type 类型
@@ -56,7 +67,18 @@ export const ShapeFactoryBase = {
  * 元素的框架
  */
 const ShapeFramework = {
-
+  // 默认样式及配置
+  options: {},
+  /**
+   * 获取控制点
+   * @param  {Object} cfg 节点、边的配置项
+   * @return {Array|null} 控制点的数组,如果为 null，则没有控制点
+   */
+  getAnchorPoints(cfg: NodeConfig | EdgeConfig) {
+    const { anchorPoints: defaultAnchorPoints } = this.options as any
+    const anchorPoints = cfg.anchorPoints || defaultAnchorPoints
+    return anchorPoints
+  }
 }
 
 export default class Shape {

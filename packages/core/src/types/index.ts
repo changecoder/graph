@@ -125,6 +125,11 @@ export interface IPoint {
   [key: string]: number | undefined
 }
 
+export interface IRect extends IPoint {
+  width: number
+  height: number
+}
+
 export interface GraphData {
   nodes?: NodeConfig[]
   edges?: EdgeConfig[]

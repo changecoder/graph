@@ -1,8 +1,9 @@
-import { isNil } from '@cc/util'
-import { CACHE_ANCHOR_POINTS } from '../constants'
+import { each, isNil } from '@cc/util'
+import { CACHE_ANCHOR_POINTS, CACHE_BBOX } from '../constants'
 import { IEdge, INode } from '../interface'
-import { IPoint, IShapeBase, ModelConfig, UpdateType } from '../types'
-import { getCircleIntersectByPoint } from '../util/graphic'
+import { IPoint, IShapeBase, ModelConfig, NodeConfig, UpdateType } from '../types'
+import { getCircleIntersectByPoint, getRectIntersectByPoint } from '../util/graphic'
+import { distance } from '../util/math'
 import Item from './item'
 
 export default class Node extends Item implements INode {
@@ -36,13 +37,13 @@ export default class Node extends Item implements INode {
     return this.get('edges').filter((edge: IEdge) => edge.get('source') === self)
   }
 
-    /**
+  /**
    * add edge
    * @param edge Edge instance
    */
-     public addEdge(edge: IEdge) {
-      this.get('edges').push(edge)
-    }
+  public addEdge(edge: IEdge) {
+    this.get('edges').push(edge)
+  }
 
   /**
    * 移除边
@@ -57,13 +58,29 @@ export default class Node extends Item implements INode {
   }
 
   /**
-   * 获取锚点的定义
+   * 获取锚点的位置
    * @return {array} anchorPoints
    */
   public getAnchorPoints(): IPoint[] {
     let anchorPoints: IPoint[] = this.get(CACHE_ANCHOR_POINTS)
     if (!anchorPoints) {
       anchorPoints = []
+      const shapeFactory = this.get('shapeFactory')
+      const bbox = this.getBBox()
+      const model: NodeConfig = this.get('model')
+      const shapeCfg = this.getShapeCfg(model)
+      const type = model.type
+      const points = shapeFactory.getAnchorPoints(type, shapeCfg) || []
+
+      each(points, (pointArr: Array<number>, index: number) => {
+        const point = {
+          x: bbox.minX as number + pointArr[0] * (bbox.width as number),
+          y: bbox.minY as number  + pointArr[1] * (bbox.height as number),
+          anchorIndex: index
+        }
+        anchorPoints.push(point)
+      })
+      this.set(CACHE_ANCHOR_POINTS, anchorPoints)
     }
     return anchorPoints
   }
@@ -88,24 +105,28 @@ export default class Node extends Item implements INode {
     const anchorPoints = this.getAnchorPoints()
     let intersectPoint: IPoint | null = null
     switch (type) {
-      case 'circle':
-        intersectPoint = getCircleIntersectByPoint(
-          {
-            x: centerX!,
-            y: centerY!,
-            r: bbox.width / 2
-          },
-          point
-        )
-        break
-      default:
-        console.log('只实现circle')
-        break
+    case 'circle':
+      intersectPoint = getCircleIntersectByPoint(
+        {
+          x: centerX!,
+          y: centerY!,
+          r: bbox.width as number / 2
+        },
+        point
+      )
+      break
+    default:
+      intersectPoint = getRectIntersectByPoint(bbox as any, point)
+      break
     }
     let linkPoint = intersectPoint
     // 如果存在锚点，则使用交点计算最近的锚点
     if (anchorPoints.length) {
-      console.log('暂未实现锚点')
+      if (!linkPoint) {
+        // 如果计算不出交点
+        linkPoint = point
+      }
+      linkPoint = this.getNearestPoint(anchorPoints, linkPoint)
     }
     if (!linkPoint) {
       // 如果最终依然没法找到锚点和连接点，直接返回中心点
@@ -136,5 +157,33 @@ export default class Node extends Item implements INode {
     ) {
       return 'move'
     }
+  }
+
+  /**
+   * 获取最近的点
+   * @param points 
+   * @param curPoint 
+   * @returns 
+   */
+  public getNearestPoint(points: IPoint[], curPoint: IPoint): IPoint {
+    let index = 0
+    let nearestPoint = points[0]
+    let minDistance = distance(points[0], curPoint)
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i]
+      const dis = distance(point, curPoint)
+      if (dis < minDistance) {
+        nearestPoint = point
+        minDistance = dis
+        index = i
+      }
+    }
+    nearestPoint.anchorIndex = index
+    return nearestPoint
+  }
+
+  public clearCache() {
+    this.set(CACHE_BBOX, null) // 清理缓存的 bbox
+    this.set(CACHE_ANCHOR_POINTS, null)
   }
 }

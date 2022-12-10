@@ -189,6 +189,7 @@ export default class ItemBase implements IItemBase {
     if (updateType === 'move') {
       this.updatePosition(cfg)
     }
+    this.clearCache()
   }
 
   /**
@@ -285,6 +286,7 @@ export default class ItemBase implements IItemBase {
 
   public destroy() {
     if (!this.destroyed) {
+      this.clearCache()
       this.destroyed = true
     }
   }

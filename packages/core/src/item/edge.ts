@@ -114,7 +114,7 @@ export default class Edge extends Item implements IEdge {
    * @param name
    * @param controlPoints
    */
-   private getPrePoint(name: SourceTarget, controlPoints: IPoint[]): NodeConfig | IPoint {
+  private getPrePoint(name: SourceTarget, controlPoints: IPoint[]): NodeConfig | IPoint {
     if (controlPoints && controlPoints.length) {
       const index = name === 'source' ? 0 : controlPoints.length - 1
       return controlPoints[index]

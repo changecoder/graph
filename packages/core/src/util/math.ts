@@ -15,3 +15,12 @@ export const applyMatrix = (point: Point, matrix: Matrix, tag: 0 | 1 = 1): Point
     y: vector[1]
   }
 }
+
+/**
+ * 获取两点之间的距离
+ */
+export const distance = (p1: Point, p2: Point): number => {
+  const vx = p1.x - p2.x
+  const vy = p1.y - p2.y
+  return Math.sqrt(vx * vx + vy * vy)
+}

@@ -17,7 +17,12 @@ Shape.registerNode(
         stroke: Global.defaultNode.style.stroke,
         fill: Global.defaultNode.style.fill,
         lineWidth: Global.defaultNode.style.lineWidth
-      }
+      },
+      // 连接点，默认为左右
+      anchorPoints: [
+        [0, 0.5],
+        [1, 0.5]
+      ]
     },
     shapeType: 'simple-rect',
     drawShape(cfg: NodeConfig, group: IGroup): IShape {
