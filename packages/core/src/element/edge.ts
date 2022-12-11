@@ -74,14 +74,16 @@ const singleEdge: ShapeOptions = {
 
     const currentAttr = shape.attr()
     const previousStyle = cfg.style || {}
-    if (previousStyle.stroke === undefined) 
-    {previousStyle.stroke = cfg.color}
+    if (previousStyle.stroke === undefined) {
+      previousStyle.stroke = cfg.color
+    }
     
     const source = cfg.sourceNode
     const target = cfg.targetNode
     let routeCfg: { [key: string]: unknown } = { radius: previousStyle.radius }
-    if (!controlPoints) 
-    {routeCfg = { source, target, offset: previousStyle.offset, radius: previousStyle.radius }}
+    if (!controlPoints) {
+      routeCfg = { source, target, offset: previousStyle.offset, radius: previousStyle.radius }
+    }
     
     const path = (this as any).getPath(points, routeCfg)
     let style: any = {}
@@ -89,18 +91,22 @@ const singleEdge: ShapeOptions = {
       style = { path }
     } else {
       style = { ...cfg.style }
-      if (style.lineWidth === undefined) 
-      {style.lineWdith = (isNumber(size) ? size : (size as number[])?.[0]) || currentAttr.lineWidth}
+      if (style.lineWidth === undefined) {
+        style.lineWdith = (isNumber(size) ? size : (size as number[])?.[0]) || currentAttr.lineWidth
+      }
       
-      if (style.path === undefined) 
-      {style.path = path}
+      if (style.path === undefined) {
+        style.path = path
+      }
       
-      if (style.stroke === undefined) 
-      {style.stroke = currentAttr.stroke || cfg.color}
+      if (style.stroke === undefined) {
+        style.stroke = currentAttr.stroke || cfg.color
+      }
        
     }
-    if (shape) 
-    {shape.attr(style)}
+    if (shape) {
+      shape.attr(style)
+    }
     
   },
 

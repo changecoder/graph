@@ -2,7 +2,7 @@ import AbstractGraph from './graph/graph'
 import Global from './global'
 import AbstractLayout from './graph/controller/layout'
 import AbstractEvent from './graph/controller/event'
-import Shape from './element'
+import Shape, { Arrow } from './element'
 import Behavior from './behavior'
 
 import Node from './item/node'
@@ -15,6 +15,7 @@ export * from './types'
 export * from './interface'
 
 export {
+  Arrow,
   Shape,
   Node,
   registerNode,
@@ -29,5 +30,6 @@ export default {
   Node,
   version: Global.version,
   registerNode: Shape.registerNode,
-  registerBehavior: (Behavior as IBehavior).registerBehavior
+  registerBehavior: (Behavior as IBehavior).registerBehavior,
+  Arrow
 }

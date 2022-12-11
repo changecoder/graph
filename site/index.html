@@ -10,7 +10,8 @@
   <div id="root"></div>
   <script src="../packages/ccg/dist/graph.min.js"></script>
   <script>
-    const graph = new window.CCG.Graph({
+    const { CCG } = window
+    const graph = new CCG.Graph({
       container: 'root',
       width: 800,
       height: 500,
@@ -19,6 +20,14 @@
       },
       modes: {
         default: ['drag-node']
+      },
+      defaultEdge: {
+        style: {
+          startArrow: {
+            path: CCG.Arrow.vee(),
+            fill: '#e2e2e2'
+          }
+        }
       }
     })
     const data = {
@@ -28,7 +37,8 @@
           type: 'simple-rect'
         },
         {
-          id: 'node2'
+          id: 'node2',
+          type: 'simple-rect'
         }
       ],
       edges: [

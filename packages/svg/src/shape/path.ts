@@ -26,7 +26,10 @@ export default class Path extends ShapeBase {
         el.setAttribute('d', this.formatPath(value))
       } else if (attr === 'startArrow' || attr === 'endArrow') {
         if (value) {
-          console.log('暂不实现箭头')
+          const id = isObject(value)
+            ? context.addArrow(attrs, SVG_ATTR_MAP[attr])
+            : context.getDefaultArrow(attrs, SVG_ATTR_MAP[attr])
+          el.setAttribute(SVG_ATTR_MAP[attr], `url(#${id})`)
         } else {
           el.removeAttribute(SVG_ATTR_MAP[attr])
         }
