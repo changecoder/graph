@@ -20,6 +20,7 @@ import Global from '../global'
 import { ICombo, IEdge, IItemBase, INode } from '../interface'
 import { ITEM_TYPE } from '../constants'
 import { singleDataValidation } from '../util/validation'
+import { plainCombosToTrees } from '../util/graphic'
 
 export interface PrivateGraphOption extends GraphOptions {
   data: GraphData
@@ -241,7 +242,7 @@ export default abstract class AbstractGraph extends EventEmitter implements IAbs
     }
 
 
-    const { nodes = [], edges = [] } = data
+    const { nodes = [], edges = [], combos = [] } = data
 
     this.clear(true)
 
@@ -250,6 +251,14 @@ export default abstract class AbstractGraph extends EventEmitter implements IAbs
     this.addItems(
       nodes.map(node => ({ type: 'node', model: node }))
     )
+
+    // 将combo和node放入一个树结构对象中
+    if (combos?.length !== 0) {
+      const comboTrees = plainCombosToTrees((combos as ComboConfig[]), (nodes as NodeConfig[]))
+      this.set('comboTrees', comboTrees)
+      // add combos
+      this.addCombos(combos)
+    }
 
     this.addItems(
       edges.map(edge => ({ type: 'edge', model: edge }))

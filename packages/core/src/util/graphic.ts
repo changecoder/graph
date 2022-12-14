@@ -1,7 +1,7 @@
-import { IGroup, Point } from '@cc/base'
-import { vec2, isBetween } from '@cc/util'
+import { IGroup, LooseObject, Point } from '@cc/base'
+import { vec2, isBetween, clone, isString, traverse } from '@cc/util'
 
-import { IShapeBase, IBBox, IPoint, ICircle, IRect } from '../types'
+import { IShapeBase, IBBox, IPoint, ICircle, IRect, ComboConfig, NodeConfig, ComboTree } from '../types'
 import { applyMatrix } from './math'
 
 export const getBBox = (element: IShapeBase, group: IGroup): IBBox => {
@@ -180,4 +180,119 @@ export const getControlPoint = (
   point.y += perpendicular[1]
 
   return point
+}
+
+export const plainCombosToTrees = (array: Array<ComboConfig>, nodes?: Array<NodeConfig>) => {
+  const result: ComboTree[] = []
+  const addedMap: LooseObject = {}
+  const modelMap: LooseObject = {}
+  array.forEach((d) => {
+    modelMap[d.id] = d
+  })
+
+  array.forEach(d => {
+    const cd = clone(d) as ComboTree
+    cd.itemType = 'combo'
+    cd.children = undefined
+    if (cd.parentId === cd.id) {
+      console.warn(`The parentId for combo ${cd.id} can not be the same as the combo's id`)
+      delete cd.parentId
+    } else if (cd.parentId && !modelMap[cd.parentId]) {
+      console.warn(`The parent combo for combo ${cd.id} does not exist!`)
+      delete cd.parentId
+    }
+    let mappedObj = addedMap[cd.id]
+    if (mappedObj) {
+      cd.children = mappedObj.children
+      addedMap[cd.id] = cd
+      mappedObj = cd
+      if (!mappedObj.parentId) {
+        result.push(mappedObj)
+        return
+      }
+      const mappedParent = addedMap[mappedObj.parentId]
+      if (mappedParent) {
+        if (mappedParent.children) {
+          mappedParent.children.push(cd)
+        }
+        else {
+          mappedParent.children = [cd]
+        }
+      } else {
+        const parent = {
+          id: mappedObj.parentId,
+          children: [mappedObj]
+        }
+        addedMap[mappedObj.parentId] = parent
+        addedMap[cd.id] = cd
+      }
+      return
+    }
+
+    if (isString(d.parentId)) {
+      const parent = addedMap[d.parentId]
+      if (parent) {
+        if (parent.children) {
+          parent.children.push(cd)
+        }
+        else {
+          parent.children = [cd]
+        }
+        addedMap[cd.id] = cd
+      } else {
+        const pa = {
+          id: d.parentId,
+          children: [cd]
+        }
+        addedMap[pa.id] = pa
+        addedMap[cd.id] = cd
+      }
+    } else {
+      result.push(cd)
+      addedMap[cd.id] = cd
+    }
+
+    const nodeMap: LooseObject = {};
+    (nodes || []).forEach((node) => {
+      nodeMap[node.id] = node
+      const combo = addedMap[node.comboId as string]
+      if (combo) {
+        const cnode: NodeConfig = {
+          id: node.id,
+          comboId: node.comboId as string,
+        }
+        if (combo.children) {combo.children.push(cnode)}
+        else {combo.children = [cnode]}
+        cnode.itemType = 'node'
+        addedMap[node.id] = cnode
+      }
+    })
+
+    let maxDepth = 0
+    result.forEach((tree: ComboTree) => {
+      tree.depth = maxDepth + 1
+      traverse<ComboTree>(tree, (child: ComboTree) => {
+        let parent
+        const itemType = addedMap[child.id].itemType
+        if (itemType === 'node') {
+          parent = addedMap[child.comboId as string]
+        } else {
+          parent = addedMap[child.parentId as string]
+        }
+        if (parent) {
+          if (itemType === 'node') {child.depth = maxDepth + 1}
+          else {child.depth = maxDepth + 10}
+        } else {
+          child.depth = maxDepth + 10
+        }
+        if (maxDepth < child.depth) {maxDepth = child.depth}
+        const oriNodeModel = nodeMap[child.id]
+        if (oriNodeModel) {
+          oriNodeModel.depth = child.depth
+        }
+        return true
+      })
+    })
+    return result
+  })
 }

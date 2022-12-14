@@ -99,12 +99,28 @@ export interface INode extends IItemBase {
   removeEdge: (edge: IEdge) => void
 }
 
-export interface ICombo extends INode {
-}
-
 export interface IEdge extends IItemBase {
   setSource: (source: INode) => void
   setTarget: (target: INode) => void
   getSource: () => INode
   getTarget: () => INode
+}
+
+export interface ICombo extends INode {
+  /**
+   * 获取 Combo 中所有的子元素，包括 Combo、Node 及 Edge
+   */
+  getChildren: () => { nodes: INode[]; combos: ICombo[] }
+
+  /**
+    * 获取 Combo 中所有节点
+    */
+  getNodes: () => INode[]
+
+  /**
+   * 向 Combo 中增加 combo
+   * @param item 节点或 combo 的 Item 实例
+   * @return boolean 添加成功返回 true，否则返回 false
+   */
+  addChild: (item: INode | ICombo) => boolean
 }

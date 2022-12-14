@@ -34,7 +34,8 @@
       nodes: [
         {
           id: 'node1',
-          type: 'simple-rect'
+          type: 'simple-rect',
+          comboId: 'combo1',
         },
         {
           id: 'node2',
@@ -47,10 +48,16 @@
           target: 'node2', // String，必须，目标点 id
           type: 'cubic-horizontal'
         }
+      ],
+      combos: [
+        {
+          id: 'combo1'
+        }
       ]
     }
     graph.data(data)
     graph.render()
+    console.log(graph)
   </script>
   <style>
     #root {

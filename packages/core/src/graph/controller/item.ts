@@ -1,10 +1,21 @@
 import { IGroup } from '@cc/base'
-import { deepMix, each, isArray, isObject, isString, upperFirst, clone, throttle } from '@cc/util'
+import { 
+  deepMix, 
+  each, 
+  isArray, 
+  isObject, 
+  isString, 
+  upperFirst, 
+  clone, 
+  throttle,
+  traverseTreeUp
+} from '@cc/util'
 import { CFG_PREFIX, ITEM_TYPE, MAPPER_SUFFIX } from '../../constants'
-import { IAbstractGraph, IEdge, INode } from '../../interface'
+import { IAbstractGraph, ICombo, IEdge, INode } from '../../interface'
 import { ComboConfig, ComboTree, EdgeConfig, Id, Item, ItemType, ModelConfig, NodeConfig, UpdateType } from '../../types'
 import Node from '../../item/node'
 import Edge from '../../item/edge'
+import Combo from '../../item/combo'
 
 export default class ItemController {
   private graph: IAbstractGraph
@@ -37,7 +48,7 @@ export default class ItemController {
       }
       edgeValues.forEach(obj => {
         const edge = obj.edge
-        if (!edge || edge.destroyed) return
+        if (!edge || edge.destroyed) {return}
         const source = edge.getSource()
         const target = edge.getTarget()
         if (!source || source.destroyed || !target || target.destroyed) {
@@ -113,6 +124,19 @@ export default class ItemController {
       item = new Node({
         model,
         group: parent.addGroup()
+      })
+    } else if (type === ITEM_TYPE.COMBO) {
+      const children = (model as ComboConfig).children as ComboTree[]
+      item = new Combo({
+        model,
+        group: parent.addGroup()
+      })
+      const comboModel = item.getModel();
+
+      (children || []).forEach((child) => {
+        const childItem = graph.findById(child.id) as ICombo | INode
+        (item as ICombo).addChild(childItem)
+        child.depth = (comboModel.depth as number) + 2
       })
     }
 
@@ -196,8 +220,24 @@ export default class ItemController {
     }
   }
 
+  // 根据 graph 上用 combos 数据生成的 comboTree 来增加所有 combos
   public addCombos(comboTrees: ComboTree[], comboModels: ComboConfig[]) {
-    console.warn('等待开发')
+    (comboTrees || []).forEach((ctree: ComboTree) => {
+      traverseTreeUp<ComboTree>(ctree, (child: ComboTree) => {
+        let comboModel
+        comboModels.forEach((model) => {
+          if (model.id === child.id) {
+            model.children = child.children
+            model.depth = child.depth
+            comboModel = model
+          }
+        })
+        if (comboModel) {
+          this.addItem('combo', comboModel)
+        }
+        return true
+      })
+    })
   }
 
   // 改变Item的显示状态
