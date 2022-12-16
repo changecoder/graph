@@ -137,6 +137,21 @@ export default class Shape {
     shapeFactory[shapeType] = shapeObj
     return shapeObj
   }
+
+  public static registerCombo(
+    shapeType: string,
+    comboDefinition: ShapeOptions,
+    extendShapeType?: string
+  ) {
+    const shapeFactory = Shape.Combo
+    const extendShape = extendShapeType ? shapeFactory.getShape(extendShapeType) : ShapeFramework
+
+    const shapeObj = { ...extendShape, ...comboDefinition }
+    shapeObj.type = shapeType
+    shapeObj.itemType = 'combo'
+    shapeFactory[shapeType] = shapeObj
+    return shapeObj
+  }
 }
 
 // 注册 Node 的工厂方法
@@ -147,4 +162,9 @@ Shape.registerFactory('node', {
 // 注册 Edge 的工厂方法
 Shape.registerFactory('edge', {
   defaultShapeType: 'line'
+})
+
+// 注册 Combo 的工厂方法
+Shape.registerFactory('combo', {
+  defaultShapeType: 'circle'
 })

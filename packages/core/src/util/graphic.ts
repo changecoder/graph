@@ -251,48 +251,52 @@ export const plainCombosToTrees = (array: Array<ComboConfig>, nodes?: Array<Node
       result.push(cd)
       addedMap[cd.id] = cd
     }
+  })
 
-    const nodeMap: LooseObject = {};
-    (nodes || []).forEach((node) => {
-      nodeMap[node.id] = node
-      const combo = addedMap[node.comboId as string]
-      if (combo) {
-        const cnode: NodeConfig = {
-          id: node.id,
-          comboId: node.comboId as string,
-        }
-        if (combo.children) {combo.children.push(cnode)}
-        else {combo.children = [cnode]}
-        cnode.itemType = 'node'
-        addedMap[node.id] = cnode
+  const nodeMap: LooseObject = {};
+  (nodes || []).forEach((node) => {
+    nodeMap[node.id] = node
+    const combo = addedMap[node.comboId as string]
+    if (combo) {
+      const cnode: NodeConfig = {
+        id: node.id,
+        comboId: node.comboId as string,
       }
-    })
+      if (combo.children) {combo.children.push(cnode)}
+      else {combo.children = [cnode]}
+      cnode.itemType = 'node'
+      addedMap[node.id] = cnode
+    }
+  })
 
-    let maxDepth = 0
-    result.forEach((tree: ComboTree) => {
-      tree.depth = maxDepth + 1
-      traverse<ComboTree>(tree, (child: ComboTree) => {
-        let parent
-        const itemType = addedMap[child.id].itemType
+  let maxDepth = 0
+  result.forEach((tree: ComboTree) => {
+    tree.depth = maxDepth + 1
+    traverse<ComboTree>(tree, (child: ComboTree) => {
+      let parent
+      const itemType = addedMap[child.id].itemType
+      if (itemType === 'node') {
+        parent = addedMap[child.comboId as string]
+      } else {
+        parent = addedMap[child.parentId as string]
+      }
+      if (parent) {
         if (itemType === 'node') {
-          parent = addedMap[child.comboId as string]
-        } else {
-          parent = addedMap[child.parentId as string]
+          child.depth = maxDepth + 1
         }
-        if (parent) {
-          if (itemType === 'node') {child.depth = maxDepth + 1}
-          else {child.depth = maxDepth + 10}
-        } else {
+        else {
           child.depth = maxDepth + 10
         }
-        if (maxDepth < child.depth) {maxDepth = child.depth}
-        const oriNodeModel = nodeMap[child.id]
-        if (oriNodeModel) {
-          oriNodeModel.depth = child.depth
-        }
-        return true
-      })
+      } else {
+        child.depth = maxDepth + 10
+      }
+      if (maxDepth < child.depth) {maxDepth = child.depth}
+      const oriNodeModel = nodeMap[child.id]
+      if (oriNodeModel) {
+        oriNodeModel.depth = child.depth
+      }
+      return true
     })
-    return result
   })
+  return result
 }

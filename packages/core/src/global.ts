@@ -4,6 +4,8 @@ const nodeMainFill = 'rgb(239, 244, 255)'
 
 const edgeMainStroke = 'rgb(224, 224, 224)'
 
+const comboFill = 'rgb(253, 253, 253)'
+
 const activeFill = 'rgb(247, 250, 255)'
 
 const colorSet = {
@@ -11,7 +13,12 @@ const colorSet = {
   activeStroke: subjectColor,
   activeFill,
 
-  edgeMainStroke
+  // for edges
+  edgeMainStroke,
+
+  // for combos
+  comboMainStroke: edgeMainStroke,
+  comboMainFill: comboFill
 }
 
 export default {
@@ -45,5 +52,19 @@ export default {
       lineAppendWidth: 2,
     },
     color: colorSet.edgeMainStroke,
+  },
+  defaultCombo: {
+    type: 'circle',
+    style: {
+      fill: colorSet.comboMainFill,
+      lineWidth: 1,
+      stroke: colorSet.comboMainStroke,
+      r: 5,
+      width: 20,
+      height: 10,
+    },
+    size: [20, 5],
+    color: colorSet.comboMainStroke,
+    padding: [25, 20, 15, 20]
   }
 }

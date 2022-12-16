@@ -82,7 +82,7 @@ export default class ItemController {
 
     if (defaultModel) {
       // 很多布局会直接修改原数据模型，所以不能用 merge 的形式，逐个写入原 model 中
-      each(defaultModel, (val, cfg) => {
+      each(defaultModel, (val: any, cfg: string | number) => {
         if (isObject(val) && !isArray(val)) {
           model[cfg] = deepMix({}, val, model[cfg])
         } else if (isArray(val)) {

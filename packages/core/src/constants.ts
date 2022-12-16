@@ -19,3 +19,5 @@ export const MAPPER_SUFFIX = 'Mapper'
 
 export const CACHE_BBOX = 'bboxCache'
 export const CACHE_ANCHOR_POINTS = 'anchorPointsCache'
+
+export const CACHE_SIZE = 'sizeCache'
