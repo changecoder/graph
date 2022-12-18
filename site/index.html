@@ -1,20 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <style type="text/css">
+    * {
+      box-sizing: border-box;
+    }
+    *::before, *::after {
+      box-sizing: border-box;
+    }
+    html,body, div, header, ul, li {
+      margin: 0;
+      padding: 0;
+    }
+    ul {
+      list-style: none;
+    }
+    #root {
+      width: 100%;
+      height: 100vh;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      width: 100%;
+      height: 48px;
+      color: rgba(255,255,255,0.7);
+      background-color: #24292f;
+    }
+    .layout_middle {
+      width: 100%;
+      height: calc(100% - 72px);
+      display: flex;
+    }
+    .layout_left {
+      flex: 1;
+    }
+    .components {
+      width: 100%;
+      padding: 20px;
+    }
+    .components .title {
+      height: 24px;
+      font-size: 18px;
+    }
+    .components .category-list>li {
+      margin: 20px;
+    }
+    .components .category-list .items {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .components .category-list .items div {
+      margin: 10px;
+      padding: 10px;
+      background-color: #e2e2e2;
+    }
+    .layout_right {
+      flex: 3;
+    }
+    #container {
+      width: 100%;
+      height: 100%;
+    }
+    footer {
+      width: 100%;
+      height: 24px;
+      color: rgba(255,255,255,0.7);
+      background-color: #24292f;
+    }
+  </style>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Graph Web Site</title>
+  <title>图编辑器</title>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <header>图编辑器</header>
+    <div class="layout_middle">
+      <div class="layout_left">
+        <div class="components">
+          <div class="title">可拖拽组件区</div>
+          <ul class="category-list">
+            <li>
+              <div>节点</div>
+              <div class="items node-list">
+                  <div draggable="true" data-type="node-circle" title="圆形">Circle</div>
+                  <div draggable="true" data-type="node-rect" title="矩形">Rect</div>
+              </div>
+            </li>
+            <li>
+              <div>关系线</div>
+              <div class="items edge-list">
+                <div title="直线">Line</div>
+                <div title="二次贝塞尔曲线">Quadratic</div>
+                <div title="三次贝塞尔曲线">Cubic</div>
+                <div title="水平方向的三阶贝塞尔曲线">Cubic-horizontal</div>
+              </div>
+            </li>
+            <li>
+              <div>箭头</div>
+              <div class="items arrow-list">
+                <div >箭头1</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="layout_right">
+        <div id="container"></div>
+      </div>
+    </div>
+    <footer></footer>
+  </div>
   <script src="../packages/ccg/dist/graph.min.js"></script>
   <script>
+    let hasRender = false
+    const isInRange = (position, bbox) => {
+      const {
+        x,
+        y,
+        width,
+        height
+      } = bbox
+      const { x: positionX, y: positionY } = position
+      return positionX >= x && 
+            positionY >= y &&
+            positionX <= x + width &&
+            positionY <= y + height
+    }
+    const canvasDom = document.getElementById('container')
+    const { clientHeight: height, clientWidth: width } = canvasDom 
+
     const { CCG } = window
+
     const graph = new CCG.Graph({
-      container: 'root',
-      width: 800,
-      height: 500,
+      container: 'container',
+      width,
+      height,
       layout: {
         type: 'random'
       },
@@ -30,36 +154,65 @@
         }
       }
     })
-    const data = {
-      nodes: [
-        {
-          id: 'node1',
-          comboId: 'combo1'
-        },
-        {
-          id: 'node2'
+    const itemAdded = (itemType, type, position) => {
+      if (!hasRender) {
+        const data = {
+          nodes: [],
+          edges: []
         }
-      ],
-      edges: [
-        {
-          source: 'node1', // String，必须，起始点 id
-          target: 'node2' // String，必须，目标点 id
+        if (itemType === 'node') {
+          data.nodes.push({
+            id: crypto.randomUUID(),
+            type: `simple-${type}`,
+            ...position
+          })
         }
-      ],
-      combos: [
-        {
-          id: 'combo1'
-        }
-      ]
+        graph.data(data)
+        graph.render()
+        hasRender = true
+      } else {
+        graph.add(
+          itemType,
+          {
+            id: crypto.randomUUID(),
+            type: `simple-${type}`,
+            ...position
+          }
+        )
+      }
     }
-    graph.data(data)
-    graph.render()
-    console.log(graph)
+
+    const bindDragEvents = () => {
+      document.addEventListener('dragstart', evt => {
+        // console.log('dragstart')    
+      })
+      document.addEventListener('dragover', evt => {
+        event.preventDefault()
+      })
+      document.addEventListener('dragend', evt => {
+        const { 
+          clientX: x, clientY: y, target
+        } = evt
+        const { 
+          clientHeight: canvasHeight, 
+          clientWidth: canvasWidth,
+          offsetLeft: canvasX,
+          offsetTop: canvasY
+        } = canvasDom
+        const dragIn = isInRange({ x, y }, {
+          x: canvasX,
+          y: canvasY,
+          width: canvasWidth,
+          height: canvasHeight
+        })
+        if (dragIn) {
+          const value = target.dataset.type
+          const [itemType, type] = value.split('-')
+          itemAdded(itemType, type, { x: x - canvasX, y: y - canvasY })
+        }
+      })
+    }
+    bindDragEvents()
   </script>
-  <style>
-    #root {
-      margin: 200px;
-    }
-  </style>
 </body>
 </html>

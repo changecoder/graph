@@ -202,8 +202,16 @@ export default abstract class AbstractGraph extends EventEmitter implements IAbs
     type: ItemType,
     model: ModelConfig
   ): Item | boolean {
-    console.warn('等待开发')
-    return false
+    const itemController: ItemController = this.get('itemController')
+    const item = this.innerAddItem(type, model, itemController)
+
+    if (item === false || item === true) {
+      return item
+    }
+
+    this.autoPaint()
+
+    return item
   }
 
   public addItems(
