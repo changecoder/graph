@@ -56,6 +56,14 @@
       padding: 10px;
       background-color: #e2e2e2;
     }
+    .hide {
+      display: absolute;
+      top: -1000px;
+    }
+    img {
+      width: 100px;
+      height: 48px;
+    }
     .layout_right {
       flex: 3;
     }
@@ -113,10 +121,12 @@
       </div>
     </div>
     <footer></footer>
+    <div class="hide">
+      <img src="https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png" alt="">
+    </div>
   </div>
   <script src="../packages/ccg/dist/graph.min.js"></script>
   <script>
-    let hasRender = false
     const isInRange = (position, bbox) => {
       const {
         x,
@@ -154,40 +164,53 @@
         }
       }
     })
+    const data = {
+      nodes: [],
+      edges: []
+    }
+    graph.data(data)
+    graph.render()
     const itemAdded = (itemType, type, position) => {
-      if (!hasRender) {
-        const data = {
-          nodes: [],
-          edges: []
-        }
-        if (itemType === 'node') {
-          data.nodes.push({
-            id: crypto.randomUUID(),
-            type: `simple-${type}`,
-            ...position
-          })
-        }
-        graph.data(data)
-        graph.render()
-        hasRender = true
+      const nodes = graph.getNodes()
+      const lastNode = nodes[nodes.length - 1]
+      const addedNode = {
+        id: crypto.randomUUID(),
+        type: `simple-${type}`
+      }
+      if (lastNode) {
+        const model = lastNode.getModel()
+        graph.add(
+          itemType,
+          {
+            ...addedNode,
+            x: model.x + 200,
+            y: model.y
+          }
+        )
+        graph.add(
+          'edge',
+          {
+            source: addedNode.id,
+            target: model.id,
+            type: 'line'
+          }
+        )
       } else {
         graph.add(
           itemType,
           {
-            id: crypto.randomUUID(),
-            type: `simple-${type}`,
+            ...addedNode,
             ...position
           }
         )
       }
     }
 
+    const image = document.querySelector('img')
     const bindDragEvents = () => {
       document.addEventListener('dragstart', evt => {
-        // console.log('dragstart')    
-      })
-      document.addEventListener('dragover', evt => {
-        event.preventDefault()
+        // 拖拽元素显示替换
+        evt.dataTransfer.setDragImage(image, 50, 24)  
       })
       document.addEventListener('dragend', evt => {
         const { 
@@ -210,6 +233,17 @@
           const [itemType, type] = value.split('-')
           itemAdded(itemType, type, { x: x - canvasX, y: y - canvasY })
         }
+      })
+      canvasDom.addEventListener('dragenter', evt => {
+        console.log('----拖拽进来了---')
+
+      })
+      canvasDom.addEventListener('dragover', evt => {
+        event.preventDefault()
+        console.log('----在画布内拖拽---', evt)
+      })
+      canvasDom.addEventListener('dragleave', evt => {
+        console.log('----在画布内离开了---')
       })
     }
     bindDragEvents()
