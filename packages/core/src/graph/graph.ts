@@ -1,5 +1,5 @@
-import { EventEmitter, ICanvas, IGroup, LooseObject } from '@cc/base'
-import { deepMix, each, isPlainObject, isString } from '@cc/util'
+import { EventEmitter, ICanvas, IGroup, LooseObject, Point } from '@cc/base'
+import { clone, deepMix, each, isPlainObject, isString, transform } from '@cc/util'
 
 import { IAbstractGraph } from '../interface/graph'
 import { 
@@ -399,6 +399,56 @@ export default abstract class AbstractGraph extends EventEmitter implements IAbs
 
   public on<T = ICCGGraphEvent>(eventName: CCGEvent, callback: (e: T) => void, once?: boolean): this {
     return super.on(eventName, callback, once)
+  }
+
+  /**
+   * 获取当前视口伸缩比例
+   * @return {number} 比例
+   */
+  public getZoom(): number {
+    const matrix = this.get('group').getMatrix()
+    return matrix ? matrix[0] : 1
+  }
+
+  // 伸缩视口到一固定比例
+  public zoomTo(toRatio: number, center?: Point): boolean {
+    const ratio = toRatio / this.getZoom()
+    return this.zoom(ratio, center)
+  }
+
+  public zoom(ratio: number, center?: Point): boolean {
+    const group: IGroup = this.get('group')
+    let matrix = clone(group.getMatrix()) as number[] || [1, 0, 0, 0, 1, 0, 0, 0, 1]
+    const minZoom: number = this.get('minZoom')
+    const maxZoom: number = this.get('maxZoom')
+    const currentZoom = this.getZoom() || 1
+    const targetZoom = currentZoom * ratio
+    let finalRatio = ratio
+
+    let failed = false
+    if (minZoom && targetZoom < minZoom) {
+      finalRatio = minZoom / currentZoom
+      failed = true
+    } else if (maxZoom && targetZoom > maxZoom) {
+      finalRatio = maxZoom / currentZoom
+      failed = true
+    }
+
+    if (center) {
+      matrix = transform(matrix, [
+        ['t', -center.x, -center.y],
+        ['s', finalRatio, finalRatio],
+        ['t', center.x, center.y]
+      ])
+    } else {
+      matrix = transform(matrix, [['s', finalRatio, finalRatio]])
+    }
+
+    group.setMatrix(matrix)
+    this.emit('viewportchange', { action: 'zoom', matrix })
+    this.autoPaint()
+
+    return !failed
   }
 
   public destroy() {

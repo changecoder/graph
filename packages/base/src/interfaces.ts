@@ -163,6 +163,16 @@ export interface IElement extends IBase {
    */
   attr(attrs: object): void
   /**
+   * 获取 transform 后的矩阵
+   * @return {number[]} 矩阵
+   */
+  getMatrix(): number[]
+  /**
+   * 设置 transform 的矩阵
+   * @param {number[]} m 应用到图形元素的矩阵
+   */
+  setMatrix(m: number[]): void
+  /**
    * 获取包围盒，这个包围盒是相对于图形元素自己，不会计算 matrix
    * @returns {BBox} 包围盒
    */

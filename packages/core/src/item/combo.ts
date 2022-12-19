@@ -1,6 +1,6 @@
 import { isNumber } from '@cc/util'
 import { CACHE_ANCHOR_POINTS, CACHE_BBOX, CACHE_SIZE } from '../constants'
-import { ICombo, INode } from '../interface'
+import { ICombo, IEdge, INode } from '../interface'
 import { ModelConfig } from '../types'
 import Node from './node'
 import Global from '../global'
@@ -9,9 +9,9 @@ export default class Combo extends Node implements ICombo {
   public getDefaultCfg() {
     return {
       type: 'combo',
-      nodes: [],
-      edges: [],
-      combos: []
+      nodes: [] as INode[],
+      edges: [] as IEdge[],
+      combos: [] as ICombo[]
     }
   }
 

@@ -10,7 +10,7 @@ export default class Node extends Item implements INode {
   public getDefaultCfg() {
     return {
       type: 'node',
-      edges: []
+      edges: [] as IEdge[]
     }
   }
 

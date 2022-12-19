@@ -20,15 +20,20 @@ export interface IBehaviorOption {
 }
 
 export class CCGGraphEvent extends GraphEvent implements ICCGGraphEvent {
-  public item: Item | null
+  public item: Item
 
   public target!: IShapeBase & ICanvas
+  
+  public wheelDelta: number;
   
   // eslint-disable-next-line no-undef
   [key: string]: unknown
 
   constructor(type: string, event: ICCGGraphEvent) {
     super(type, event)
+    this.wheelDelta = event.wheelDelta
     this.item = event.item
   }
+  x: number
+  y: number
 }

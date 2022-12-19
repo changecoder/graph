@@ -17,6 +17,28 @@ export default class GraphEvent {
   // 是否允许冒泡
   bubbles: boolean = true
 
+  /**
+   * 是否阻止了原生事件
+   * @type {boolean}
+   */
+  defaultPrevented: boolean = false
+
+  /**
+   * 触发时的对象
+   * @type {object}
+   */
+  originalEvent: Event
+
+  /**
+   * 阻止浏览器默认的行为
+   */
+  preventDefault() {
+    this.defaultPrevented = true
+    if (this.originalEvent.preventDefault) {
+      this.originalEvent.preventDefault()
+    }
+  }
+  
   // 是否阻止传播（向上冒泡）
   propagationStopped: boolean = false
 
@@ -41,6 +63,7 @@ export default class GraphEvent {
   constructor(type: string, event: any) {
     this.type = type
     this.name = type
+    this.originalEvent = event
     this.timeStamp = event.timeStamp
   }
 }

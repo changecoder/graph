@@ -33,7 +33,7 @@ export default class EventController {
   bindEvents() {
     const el = this.canvas?.get('el')
 
-    each(EVENTS, (eventName) => {
+    each(EVENTS, (eventName: string) => {
       el.addEventListener(eventName, this.eventCallback, { passive: true })
     })
 

@@ -30,9 +30,10 @@ export type CCGEvent = NodeEventType |
   (string & {})
 
 export interface ICCGGraphEvent extends GraphEvent {
-  item: Item | null
+  item: Item
   target: IShapeBase & ICanvas
   x: number
   y: number
+  wheelDelta: number
   [key: string]: unknown
 }

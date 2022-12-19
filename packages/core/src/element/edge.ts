@@ -168,7 +168,7 @@ Shape.registerEdge(
   'line',
   {
     // 控制点不生效
-    getControlPoints() {
+    getControlPoints(): any {
       return undefined
     },
   },

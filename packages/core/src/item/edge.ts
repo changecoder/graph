@@ -8,10 +8,10 @@ export default class Edge extends Item implements IEdge {
   protected getDefaultCfg() {
     return {
       type: 'edge',
-      sourceNode: null,
-      targetNode: null,
-      startPoint: null,
-      endPoint: null,
+      sourceNode: null as NodeConfig,
+      targetNode: null as NodeConfig,
+      startPoint: null as NodeConfig | IPoint,
+      endPoint: null as NodeConfig | IPoint,
       linkCenter: false
     }
   }

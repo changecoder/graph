@@ -1,6 +1,6 @@
 import { ICanvas, IShape } from '@cc/base'
 import { AbstractEvent, ICCGGraphEvent } from '@cc/core'
-import { wrapBehavior } from '@cc/util'
+import { wrapBehavior, addEventListener, isNil, each } from '@cc/util'
 
 import { Fun } from '../../types'
 
@@ -10,6 +10,8 @@ import Graph from '../graph'
 export default class EventController extends AbstractEvent {
   public destroyed: boolean
 
+  protected extendEvents: any[] = []
+  
   protected canvasHandler!: Fun
   
   protected dragging: boolean = false
@@ -30,16 +32,31 @@ export default class EventController extends AbstractEvent {
   }
 
   protected initEvents() {
-    const { graph } = this
+    const { graph, extendEvents = [] } = this
     const canvas: ICanvas = graph.get('canvas')
     const el = canvas.get('el')
 
     const canvasHandler: Fun = wrapBehavior(this, 'onCanvasEvents') as Fun
+    const wheelHandler = wrapBehavior(this, 'onWheelEvent')
 
     canvas.off('*').on('*', canvasHandler)
     this.canvasHandler = canvasHandler
+
+    extendEvents.push(addEventListener(el, 'DOMMouseScroll', wheelHandler))
+    extendEvents.push(addEventListener(el, 'mousewheel', wheelHandler))
   }
 
+  /**
+   * 处理滚轮事件
+   * @param evt 事件句柄
+   */
+  protected onWheelEvent(evt: ICCGGraphEvent) {
+    if (isNil(evt.wheelDelta)) { // 兼容处理
+      evt.wheelDelta = -(evt.detail as number)
+    }
+    this.graph.emit('wheel', evt)
+  }
+    
   /**
    * 处理 canvas 事件
    * @param evt 事件句柄
@@ -115,6 +132,19 @@ export default class EventController extends AbstractEvent {
   }
 
   public destroy() {
+    const { graph, canvasHandler, extendEvents } = this
+    const canvas: ICanvas = graph.get('canvas')
+
+    canvas.off('*', canvasHandler)
+
+    each(extendEvents, (event) => {
+      event.remove()
+    })
+
+    this.dragging = false
+
+    this.extendEvents.length = 0
+
     this.destroyed = true
   }
 }
